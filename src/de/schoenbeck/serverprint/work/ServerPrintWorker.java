@@ -10,8 +10,18 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
+import org.adempiere.webui.editor.WEditor;
+import org.adempiere.webui.editor.WTableDirEditor;
+import org.adempiere.webui.window.FDialog;
+import org.compiere.model.MLookup;
+import org.compiere.model.MLookupFactory;
 import org.compiere.util.DB;
+import org.compiere.util.DisplayType;
+import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 import de.schoenbeck.serverprint.exceptions.CalledFromProcessException;
 import de.schoenbeck.serverprint.exceptions.NoPrintProfileException;
@@ -155,45 +165,34 @@ public class ServerPrintWorker {
 		if (isCalledFromProcess) 
 			throw new CalledFromProcessException();
 		
-		StringBuilder errmsg = new StringBuilder("Incorrect configuration. Currently no manual choice of print option is available. The configured options this time were:");
-		for (var opt : options)
-			errmsg.append("\n" + opt);
-		throw new RuntimeException(errmsg.toString());
+		var optArr = options.toArray(new Integer[options.size()]);
+
+		CompletableFuture<Object> future = new CompletableFuture<>();
 		
-//		var optArr = options.toArray(new Integer[options.size()]);
-//
-//		StringBuilder validation = new StringBuilder("sbsp_printoption.sbsp_printoption_id IN (");
-//		if (optArr.length > 0) //FIXME: warum erreichen wir diesen Punkt bei length==0?
-//			validation.append(optArr[0]);
-//		for (int i = 1; i < optArr.length; i++)
-//			validation.append(",").append(optArr[i]);
-//		validation.append(") AND sbsp_printoption.islimitedtoprocess = 'N'");
-//		
-//		MLookup lookup = MLookupFactory.get(
-//				Env.getCtx(), 
-//				windowno,
-//				1000191, /*sbsp_printoption.value*/
-//				DisplayType.TableDir, 
-//				Env.getLanguage(Env.getCtx()), 
-//				"sbsp_printoption_ID",
-//				19, /*table direct*/
-//				false,
-//				validation.toString());
-//		WEditor editor = new WTableDirEditor(lookup, "", "", true, false, true);
-//		String msg = Msg.getMsg(Env.getCtx(), "printoptiondialog");
-//		
-//		var process = new RequestUserInteraction();
-//		ProcessInfoParameter p_windowno = new ProcessInfoParameter("windowno", windowno, null, null, null);
-//		ProcessInfoParameter p_editor = new ProcessInfoParameter("editor", editor, null, null, null);
-//		ProcessInfoParameter p_msg = new ProcessInfoParameter("msg", msg, null, null, null);
-//		ProcessInfo pi = new ProcessInfo("RequestInteraction", 0);
-//		
-//		pi.setParameter(new ProcessInfoParameter[] {p_windowno, p_editor, p_msg});
-//		process.startProcess(Env.getCtx(), pi, trxName==null?null:Trx.get(trxName, false));
-//		
-//		var rtn = Integer.parseInt(pi.getSummary()); //TODO: ugly
-//		
-//		return rtn;
+		StringBuilder validation = new StringBuilder("sbsp_printoption.sbsp_printoption_id IN (");
+		if (optArr.length > 0)
+			validation.append(optArr[0]);
+		for (int i = 1; i < optArr.length; i++)
+			validation.append(",").append(optArr[i]);
+		validation.append(") AND sbsp_printoption.islimitedtoprocess = 'N'");
+		
+		MLookup lookup = MLookupFactory.get(
+				Env.getCtx(), 
+				windowno,
+				1000191, /*sbsp_printoption.value*/
+				DisplayType.TableDir, 
+				Env.getLanguage(Env.getCtx()), 
+				"sbsp_printoption_ID",
+				19, /*table direct*/
+				false,
+				validation.toString());
+		WEditor editor = new WTableDirEditor(lookup, "", "", true, false, true);
+		String msg = Msg.getMsg(Env.getCtx(), "sbsp_printoptiondialog");
+		
+		FDialog.askForInput(windowno, editor, msg, (obj) -> future.complete(obj));
+		
+		Object rtn = future.get(10, TimeUnit.SECONDS);
+		return rtn == null ? 0 : (Integer) rtn;
 	}
 
 	private List<ServerPrintCopyParam> getSubParams (ServerPrintWorkerParam[] subParams) throws SQLException {

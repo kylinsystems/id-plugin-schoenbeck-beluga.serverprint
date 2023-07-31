@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: beluga.serverprint
 Bundle-SymbolicName: beluga.serverprint
-Bundle-Version: 5.0.0.qualifier
+Bundle-Version: 4.5.3.qualifier
 Service-Component: OSGI-INF/*.xml
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.adempiere.base;bundle-version="5.1.0",
@@ -17,7 +17,12 @@ Require-Bundle: org.adempiere.base;bundle-version="5.1.0",
 Import-Package: org.apache.commons.codec;version="1.9.0",
  org.apache.commons.codec.binary;version="1.9.0",
  org.jfree.io
-Bundle-ClassPath: .
+Bundle-ClassPath: .,
+ lib/commons-codec-1.2.jar,
+ lib/commons-httpclient-3.1.jar,
+ lib/commons-logging-1.0.4.jar,
+ lib/jspi.jar,
+ lib/jcommon-1.0.23.jar
 Bundle-Activator: org.adempiere.plugin.utils.AdempiereActivator
 Bundle-ActivationPolicy: lazy
 Export-Package: de.schoenbeck.serverprint,
