@@ -208,6 +208,7 @@ public class ServerPrintWorker {
 				ps.setInt(4, param.ad_user_id);
 				ps.setInt(5, param.c_doctype_id);
 				ps.setInt(6, param.ad_tab_id);
+				ps.setString(7, isCalledFromProcess ? "Y" : "N");
 				
 				rs = ps.executeQuery();
 				while (rs.next()) {
