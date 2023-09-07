@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
-import org.adempiere.webui.window.FDialog;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.util.DB;
@@ -189,7 +189,7 @@ public class ServerPrintWorker {
 		WEditor editor = new WTableDirEditor(lookup, "", "", true, false, true);
 		String msg = Msg.getMsg(Env.getCtx(), "sbsp_printoptiondialog");
 		
-		FDialog.askForInput(windowno, editor, msg, (obj) -> future.complete(obj));
+		Dialog.askForInput(windowno, editor, msg, (obj) -> future.complete(obj));
 		
 		Object rtn = future.get(10, TimeUnit.SECONDS);
 		return rtn == null ? 0 : (Integer) rtn;
