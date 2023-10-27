@@ -12,12 +12,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.window.Dialog;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
+import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -189,7 +191,19 @@ public class ServerPrintWorker {
 		WEditor editor = new WTableDirEditor(lookup, "", "", true, false, true);
 		String msg = Msg.getMsg(Env.getCtx(), "sbsp_printoptiondialog");
 		
-		Dialog.askForInput(windowno, editor, msg, (obj) -> future.complete(obj));
+		Dialog.askForInput(windowno, editor, msg, (obj) -> {
+			params[0].sbsp_printoption_id = obj == null ? 0 : (Integer) obj;
+			var worker = new ServerPrintWorker(isCalledFromProcess, windowno);
+			worker.prepare(params);
+			try {
+				worker.start();
+			} catch (Exception e) {
+				CLogger.get().log(Level.WARNING, "", e);
+//				windowContent.getStatusBar().setStatusLine(e.getLocalizedMessage(), true);
+//				windowContent.getStatusBar().focus();
+			}
+		});
+		
 		
 		Object rtn = future.get(10, TimeUnit.SECONDS);
 		return rtn == null ? 0 : (Integer) rtn;
