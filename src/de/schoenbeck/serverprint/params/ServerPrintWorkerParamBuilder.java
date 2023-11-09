@@ -13,6 +13,21 @@ public class ServerPrintWorkerParamBuilder {
 	int record_id = 0;
 	int sbsp_printoption_id = -1;
 	
+	public ServerPrintWorkerParamBuilder (ServerPrintWorkerParam copyFrom) {
+		this.ad_client_id = copyFrom.ad_client_id;
+		this.ad_org_id  = copyFrom.ad_org_id;
+		this.c_bpartner_id = copyFrom.c_bpartner_id;
+		this.ad_user_id = copyFrom.ad_user_id;
+		this.c_doctype_id = copyFrom.c_doctype_id;
+		this.ad_tab_id = copyFrom.ad_tab_id;
+		this.ad_user_id_bpartner = copyFrom.ad_user_id_bpartner;
+		this.ad_table_id = copyFrom.ad_table_id;
+		this.record_id = copyFrom.record_id;
+		this.sbsp_printoption_id = copyFrom.sbsp_printoption_id;
+	}
+	
+	public ServerPrintWorkerParamBuilder() {}
+
 	public ServerPrintWorkerParamBuilder setSbsp_printoption_id(int sbsp_printoption_id) {
 		this.sbsp_printoption_id = sbsp_printoption_id;
 		return this;

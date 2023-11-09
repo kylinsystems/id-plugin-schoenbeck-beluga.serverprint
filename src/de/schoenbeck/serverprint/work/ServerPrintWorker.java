@@ -4,7 +4,9 @@ import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -66,6 +68,7 @@ public class ServerPrintWorker {
 					.setRecord_id(record_id)
 					.build();
 		prepare(param);
+		
 	}
 	
 	public void prepare (ServerPrintWorkerParam param) {
@@ -120,7 +123,7 @@ public class ServerPrintWorker {
 			DB.close(rs, ps);
 		}
 		
-		checkCopiesForPrintOptions(copies);
+		copies = checkCopiesForPrintOptions(copies);
 		
 		Map<ServerPrintCopyParam, File> files = new HashMap<>();
 		
@@ -131,9 +134,10 @@ public class ServerPrintWorker {
 	/**
 	 * Remove from the list all copies but the copies with standard or specified printoption
 	 * @param copies - All valid copies
+	 * @return 
 	 * @throws Exception - If lookup fails, the window times out or if called from process (from {@link ServerPrintWorker#choosePrintOptionId(HashSet)}
 	 */
-	private void checkCopiesForPrintOptions(List<Copy> copies) throws Exception {
+	private LinkedList<Copy> checkCopiesForPrintOptions(LinkedList<Copy> copies) throws Exception {
 		
 		HashSet<Integer> options = new HashSet<>();
 		
@@ -142,8 +146,8 @@ public class ServerPrintWorker {
 		}
 		
 		if (options.size() == 0) throw new NoPrintProfileException();
-		if (options.size() <= 1) return;
-		if (options.size() == 2 && options.contains(0)) return;
+		if (options.size() <= 1) return copies;
+		if (options.size() == 2 && options.contains(0)) return copies;
 		
 		int option;
 		if (params[0].sbsp_printoption_id != -1)
@@ -151,10 +155,13 @@ public class ServerPrintWorker {
 		else
 			option = choosePrintOptionId(options);
 		
+		LinkedList<Copy> testcopies = new LinkedList<Copy>();
+		
 		for (Copy c : copies) {
-			if (c.sbsp_printoption_id != option && c.sbsp_printoption_id != 0)
-				copies.remove(c);
-		}
+			if (!(c.sbsp_printoption_id != option && c.sbsp_printoption_id != 0))
+				testcopies.add(c);	
+			}
+		return testcopies;
 	}
 	
 	/**
@@ -191,10 +198,14 @@ public class ServerPrintWorker {
 		WEditor editor = new WTableDirEditor(lookup, "", "", true, false, true);
 		String msg = Msg.getMsg(Env.getCtx(), "sbsp_printoptiondialog");
 		
+		
 		Dialog.askForInput(windowno, editor, msg, (obj) -> {
-			params[0].sbsp_printoption_id = obj == null ? 0 : (Integer) obj;
+			ServerPrintWorkerParam param = 
+					new ServerPrintWorkerParamBuilder(params[0])
+						.setSbsp_printoption_id(obj == null ? 0 : (Integer) obj)
+						.build();
 			var worker = new ServerPrintWorker(isCalledFromProcess, windowno);
-			worker.prepare(params);
+			worker.prepare(param);
 			try {
 				worker.start();
 			} catch (Exception e) {
