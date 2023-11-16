@@ -16,6 +16,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
+import org.adempiere.webui.adwindow.ADWindow;
+import org.adempiere.webui.adwindow.ADWindowContent;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.window.Dialog;
@@ -134,7 +136,7 @@ public class ServerPrintWorker {
 	/**
 	 * Remove from the list all copies but the copies with standard or specified printoption
 	 * @param copies - All valid copies
-	 * @return 
+	 * @return Modified list containing only copies with chosen printoptions
 	 * @throws Exception - If lookup fails, the window times out or if called from process (from {@link ServerPrintWorker#choosePrintOptionId(HashSet)}
 	 */
 	private LinkedList<Copy> checkCopiesForPrintOptions(LinkedList<Copy> copies) throws Exception {
@@ -208,10 +210,12 @@ public class ServerPrintWorker {
 			worker.prepare(param);
 			try {
 				worker.start();
+				ADWindow.get(windowno).getADWindowContent().getStatusBar().setStatusLine(Msg.getMsg(Env.getCtx(), "Printedsuccessfully"), false);
 			} catch (Exception e) {
 				CLogger.get().log(Level.WARNING, "", e);
-//				windowContent.getStatusBar().setStatusLine(e.getLocalizedMessage(), true);
-//				windowContent.getStatusBar().focus();
+				ADWindowContent windowContent = ADWindow.get(windowno).getADWindowContent();
+				windowContent.getStatusBar().setStatusLine(e.getLocalizedMessage(), true);
+				windowContent.getStatusBar().focus();
 			}
 		});
 		
