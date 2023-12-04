@@ -23,7 +23,7 @@ import org.compiere.model.*;
 
 /** Generated Model for sbsp_copytype
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="sbsp_copytype")
 public class X_sbsp_copytype extends PO implements I_sbsp_copytype, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_sbsp_copytype extends PO implements I_sbsp_copytype, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230406L;
+	private static final long serialVersionUID = 20231130L;
 
     /** Standard Constructor */
     public X_sbsp_copytype (Properties ctx, int sbsp_copytype_ID, String trxName)

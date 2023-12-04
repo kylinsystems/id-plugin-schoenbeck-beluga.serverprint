@@ -75,6 +75,7 @@ import de.schoenbeck.serverprint.exceptions.TemplateNotFoundException;
 import de.schoenbeck.serverprint.helper.EnumSubtitute;
 import de.schoenbeck.serverprint.helper.SBSP_EMailDialog;
 import de.schoenbeck.serverprint.params.ServerPrintCopyParam;
+import printProvider.ServerPrintProcessManager;
 
 public class Copy {
 
@@ -275,17 +276,24 @@ public class Copy {
 		archive.saveEx();
 	}
 	
+//	private static void print (ServerPrintCopyParam p, File printedDoc) throws Exception {
+//		
+//		PrinterConfig preparedPrintConfig = printPreparation(p);
+//		
+//		Doc doc = new SimpleDoc(new FileInputStream(printedDoc),
+//				DocFlavor.INPUT_STREAM.PDF,
+//				new HashDocAttributeSet());
+//		// we are setting the doc and the job attributes
+//		preparedPrintConfig.printJob.print(doc, preparedPrintConfig.printAttributes);
+//		
+//		System.out.println("printing successfull...");               
+//	}
+	
 	private static void print (ServerPrintCopyParam p, File printedDoc) throws Exception {
-		
-		PrinterConfig preparedPrintConfig = printPreparation(p);
-		
-		Doc doc = new SimpleDoc(new FileInputStream(printedDoc),
-				DocFlavor.INPUT_STREAM.PDF,
-				new HashDocAttributeSet());
-		// we are setting the doc and the job attributes
-		preparedPrintConfig.printJob.print(doc, preparedPrintConfig.printAttributes);
-		
-		System.out.println("printing successfull...");               
+		// find printer
+		// find provider
+		// get provider implementation
+		// call provider.run
 	}
 	
 	private static void sendMail (ServerPrintCopyParam p, File[] printedDoc) throws Exception {
@@ -362,9 +370,6 @@ public class Copy {
 	
 	// HELPER METHODS ////
 	private static PrinterConfig printPreparation (ServerPrintCopyParam p) throws Exception {
-		// void is incorrect
-		// this is supposed to return the correct print profile
-		// possibly this should be moved to the very beginning
 		
 		/* first retrieve the information for this printconfiguration */
     	PrintService service = null;

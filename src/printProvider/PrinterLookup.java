@@ -2,7 +2,7 @@ package printProvider;
 
 import java.util.List;
 
-import de.schoenbeck.serverprint.model.X_sbsp_printer;
+import de.schoenbeck.serverprint.model.MPrinter;
 
 public interface PrinterLookup {
 
@@ -11,5 +11,11 @@ public interface PrinterLookup {
 	 * @param provider_id - The Print Provider's ID in DB
 	 * @return A list of printers that are available with this provider
 	 */
-	public List<X_sbsp_printer> getAvailablePrinters(int provider_id);
+	public List<MPrinter> getAvailablePrinters(int provider_id);
+	
+	/**
+	 * 
+	 * @return The value (search key) of the provider to register for
+	 */
+	public String getProviderValue();
 }

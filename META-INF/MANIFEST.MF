@@ -27,5 +27,6 @@ Bundle-Activator: org.adempiere.plugin.utils.AdempiereActivator
 Bundle-ActivationPolicy: lazy
 Export-Package: de.schoenbeck.serverprint,
  de.schoenbeck.serverprint.params,
- de.schoenbeck.serverprint.work
+ de.schoenbeck.serverprint.work,
+ printProvider
 Automatic-Module-Name: beluga.serverprint

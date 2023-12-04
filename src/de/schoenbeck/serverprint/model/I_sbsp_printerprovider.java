@@ -21,18 +21,18 @@ import java.sql.Timestamp;
 import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for sbsp_printprofile
+/** Generated Interface for sbsp_printerprovider
  *  @author iDempiere (generated) 
  *  @version Release 10
  */
 @SuppressWarnings("all")
-public interface I_sbsp_printprofile 
+public interface I_sbsp_printerprovider 
 {
 
-    /** TableName=sbsp_printprofile */
-    public static final String Table_Name = "sbsp_printprofile";
+    /** TableName=sbsp_printerprovider */
+    public static final String Table_Name = "sbsp_printerprovider";
 
-    /** AD_Table_ID=1000006 */
+    /** AD_Table_ID=1000015 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -46,8 +46,8 @@ public interface I_sbsp_printprofile
     /** Column name AD_Client_ID */
     public static final String COLUMNNAME_AD_Client_ID = "AD_Client_ID";
 
-	/** Get Client.
-	  * Client/Tenant for this installation.
+	/** Get Tenant.
+	  * Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
 
@@ -55,14 +55,25 @@ public interface I_sbsp_printprofile
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
 	/** Set Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public void setAD_Org_ID (int AD_Org_ID);
 
 	/** Get Organization.
-	  * Organizational entity within client
+	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
+
+    /** Column name AD_Process_ID_Printing */
+    public static final String COLUMNNAME_AD_Process_ID_Printing = "AD_Process_ID_Printing";
+
+	/** Set Printing Implementation	  */
+	public void setAD_Process_ID_Printing (int AD_Process_ID_Printing);
+
+	/** Get Printing Implementation	  */
+	public int getAD_Process_ID_Printing();
+
+	public org.compiere.model.I_AD_Process getAD_Process_ID_Print() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -92,6 +103,19 @@ public interface I_sbsp_printprofile
 	  * Optional short description of the record
 	  */
 	public String getDescription();
+
+    /** Column name Help */
+    public static final String COLUMNNAME_Help = "Help";
+
+	/** Set Comment/Help.
+	  * Comment or Hint
+	  */
+	public void setHelp (String Help);
+
+	/** Get Comment/Help.
+	  * Comment or Hint
+	  */
+	public String getHelp();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
@@ -148,39 +172,61 @@ public interface I_sbsp_printprofile
 	  */
 	public String getValue();
 
-    /** Column name isstandardprintprofile */
-    public static final String COLUMNNAME_isstandardprintprofile = "isstandardprintprofile";
+    /** Column name lookup_printers */
+    public static final String COLUMNNAME_lookup_printers = "lookup_printers";
 
-	/** Set Standard	  */
-	public void setisstandardprintprofile (boolean isstandardprintprofile);
+	/** Set Lookup Printers.
+	  * Lookup the printers behind this provider
+	  */
+	public void setlookup_printers (String lookup_printers);
 
-	/** Get Standard	  */
-	public boolean isstandardprintprofile();
+	/** Get Lookup Printers.
+	  * Lookup the printers behind this provider
+	  */
+	public String getlookup_printers();
 
-    /** Column name printpriority */
-    public static final String COLUMNNAME_printpriority = "printpriority";
+    /** Column name printer_password */
+    public static final String COLUMNNAME_printer_password = "printer_password";
 
-	/** Set Priority	  */
-	public void setprintpriority (int printpriority);
+	/** Set printer password	  */
+	public void setprinter_password (String printer_password);
 
-	/** Get Priority	  */
-	public int getprintpriority();
+	/** Get printer password	  */
+	public String getprinter_password();
 
-    /** Column name sbsp_printprofile_ID */
-    public static final String COLUMNNAME_sbsp_printprofile_ID = "sbsp_printprofile_ID";
+    /** Column name printer_uri */
+    public static final String COLUMNNAME_printer_uri = "printer_uri";
 
-	/** Set Print Profile	  */
-	public void setsbsp_printprofile_ID (int sbsp_printprofile_ID);
+	/** Set printer URI	  */
+	public void setprinter_uri (String printer_uri);
 
-	/** Get Print Profile	  */
-	public int getsbsp_printprofile_ID();
+	/** Get printer URI	  */
+	public String getprinter_uri();
 
-    /** Column name sbsp_printprofile_UU */
-    public static final String COLUMNNAME_sbsp_printprofile_UU = "sbsp_printprofile_UU";
+    /** Column name printer_username */
+    public static final String COLUMNNAME_printer_username = "printer_username";
 
-	/** Set sbsp_printprofile_UU	  */
-	public void setsbsp_printprofile_UU (String sbsp_printprofile_UU);
+	/** Set printer username	  */
+	public void setprinter_username (String printer_username);
 
-	/** Get sbsp_printprofile_UU	  */
-	public String getsbsp_printprofile_UU();
+	/** Get printer username	  */
+	public String getprinter_username();
+
+    /** Column name sbsp_printerprovider_ID */
+    public static final String COLUMNNAME_sbsp_printerprovider_ID = "sbsp_printerprovider_ID";
+
+	/** Set Printer Provider	  */
+	public void setsbsp_printerprovider_ID (int sbsp_printerprovider_ID);
+
+	/** Get Printer Provider	  */
+	public int getsbsp_printerprovider_ID();
+
+    /** Column name sbsp_printerprovider_UU */
+    public static final String COLUMNNAME_sbsp_printerprovider_UU = "sbsp_printerprovider_UU";
+
+	/** Set sbsp_printerprovider_UU	  */
+	public void setsbsp_printerprovider_UU (String sbsp_printerprovider_UU);
+
+	/** Get sbsp_printerprovider_UU	  */
+	public String getsbsp_printerprovider_UU();
 }

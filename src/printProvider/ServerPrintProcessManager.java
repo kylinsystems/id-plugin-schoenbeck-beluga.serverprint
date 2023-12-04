@@ -1,5 +1,6 @@
 package printProvider;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,37 +9,13 @@ import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 
-public class ServerPrintProcessManager {
+public class ServerPrintProcessManager implements Serializable {
 
+	private static final long serialVersionUID = 7277153172458307683L;
+	
 	//Printer Provider[Value] mapped to Class
 	static Map<String, Class<? extends Printrun>> print = new HashMap<>();
 	static Map<String, Class<? extends PrinterLookup>> lookup = new HashMap<>();
-	
-	/*TODO: easy variant doesn't work yet
-	public static synchronized boolean registerPrint (String providerValue) {
-		Class<?> caller = StackWalker.getInstance().getCallerClass();
-		if (Printrun.class.isAssignableFrom(caller))
-			return registerPrint(providerValue, (Printrun)caller);
-		return false;
-	}
-	*/
-	public static synchronized boolean registerPrint (String providerValue, Class<? extends Printrun> process) {
-		if (Printrun.class.isAssignableFrom(process)) {
-			var old = print.put(providerValue, process);
-			if (old != null) CLogger.get().log(Level.INFO, "Unregistered " + old + " for provider " + providerValue);
-			return true;
-		}
-		return false;
-	}
-	
-	public static synchronized boolean registerLookup (String providerValue, Class<? extends PrinterLookup> process) {
-		if (PrinterLookup.class.isAssignableFrom(process)) {
-			var old = lookup.put(providerValue, process);
-			if (old != null) CLogger.get().log(Level.INFO, "Unregistered " + old + " for provider " + providerValue);
-			return true;
-		}
-		return false;
-	}
 	
 	public static synchronized Optional<Printrun> getPrint (String value) {
 		try {
@@ -60,10 +37,30 @@ public class ServerPrintProcessManager {
 		return Optional.empty();
 	}
 	
-	/**
-	 * The reason to register for; is the process a lookup or 
-	 */
-	public enum Cause {
-		PRINT,LOOKUP
+	public void bindLookup (PrinterLookup pl) {
+		Class<? extends PrinterLookup> process = pl.getClass();
+		var old = lookup.put(pl.getProviderValue(), process);
+		if (old != null) CLogger.get().log(Level.INFO, "Unregistered " + old + " for provider " + pl.getProviderValue());
+		CLogger.get().info("Successfully registered Lookup: " + process.getCanonicalName());
 	}
+	
+	public void unbindLookup (PrinterLookup pl) {
+		if (lookup.get(pl.getProviderValue()) == pl.getClass())
+			lookup.remove(pl.getProviderValue());
+		CLogger.get().info(pl.getClass().getCanonicalName() + " unregistered.");
+	}
+	
+	public void bindPrint (Printrun pr) {
+		Class<? extends Printrun> process = pr.getClass();
+		var old = print.put(pr.getProviderValue(), process);
+		if (old != null) CLogger.get().log(Level.INFO, "Unregistered " + old + " for provider " + pr.getProviderValue());
+		CLogger.get().info("Successfully registered Printrun: " + process.getCanonicalName());
+	}
+	
+	public void unbindPrintrun (Printrun pr) {
+		if (print.get(pr.getProviderValue()) == pr.getClass())
+			print.remove(pr.getProviderValue());
+		CLogger.get().info(pr.getClass().getCanonicalName() + " unregistered.");
+	}
+	
 }

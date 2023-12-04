@@ -1,6 +1,12 @@
 package printProvider;
 
+import java.util.HashSet;
+import java.util.NoSuchElementException;
+
 import org.compiere.process.SvrProcess;
+
+import de.schoenbeck.serverprint.model.MPrinter;
+import de.schoenbeck.serverprint.model.MPrinterProvider;
 
 public class ServerPrintPrinterLookupProcess extends SvrProcess {
 
@@ -13,15 +19,23 @@ public class ServerPrintPrinterLookupProcess extends SvrProcess {
 
 	@Override
 	protected String doIt() throws Exception {
-		// TODO: pick the specific Lookup Process Implementation for the provider and run it
 		
-		//provider = new(record_id)
-		//lookupProcess = ServerPrintProcessManager.getLookup(provider.value)
-		//printers = lookupProcess.getAvailablePrinters(record_id)
+		MPrinterProvider provider = new MPrinterProvider(getCtx(), record_id, get_TrxName());
+		PrinterLookup lookupProcess = ServerPrintProcessManager.getLookup(provider.getValue())
+				.orElseThrow( () -> new NoSuchElementException("The provider does not exist.") );
+		var printers = lookupProcess.getAvailablePrinters(record_id);
 		
-		//kick out known printers
-		//optionally show printers to user and let them select, which to keep
-		//optionally show printers to user and let them set one as "theirs"
+		var knownPrinters = new HashSet<Integer>();
+		for (int i : provider.getKnownPrinterIDs())
+			knownPrinters.add(i);
+		
+		for (MPrinter p : printers) {
+			if (!knownPrinters.contains(p.get_ID()))
+				p.save();
+		}
+
+		//TODO: optionally show printers to user and let them select, which to keep
+		//TODO: optionally show printers to user and let them set one as "theirs"
 		
 		return null;
 	}

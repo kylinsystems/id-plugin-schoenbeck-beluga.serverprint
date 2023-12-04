@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<component name="PrintrunConsumer">
+   <implementation class="printProvider.ServerPrintProcessManager" />
+   <reference name="Printrun"
+              interface="printProvider.Printrun"
+              bind="bindPrintrun"
+              unbind="unbindPrintrun" />
+</component>

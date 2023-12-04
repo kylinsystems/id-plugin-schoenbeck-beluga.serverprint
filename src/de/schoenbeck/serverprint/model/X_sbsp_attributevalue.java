@@ -23,7 +23,7 @@ import org.compiere.model.*;
 
 /** Generated Model for sbsp_attributevalue
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="sbsp_attributevalue")
 public class X_sbsp_attributevalue extends PO implements I_sbsp_attributevalue, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_sbsp_attributevalue extends PO implements I_sbsp_attributevalue, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230406L;
+	private static final long serialVersionUID = 20231130L;
 
     /** Standard Constructor */
     public X_sbsp_attributevalue (Properties ctx, int sbsp_attributevalue_ID, String trxName)
