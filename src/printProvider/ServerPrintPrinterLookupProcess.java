@@ -37,7 +37,7 @@ public class ServerPrintPrinterLookupProcess extends SvrProcess {
 		//TODO: optionally show printers to user and let them select, which to keep
 		//TODO: optionally show printers to user and let them set one as "theirs"
 		
-		return null;
+		return "@success@";
 	}
 
 }

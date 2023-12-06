@@ -39,5 +39,7 @@ Export-Package: de.schoenbeck.serverprint;uses:="org.adempiere.base,org.compiere
   uses:="de.schoenbeck.serverprint.params,
    javax.print,
    de.schoenbeck.serverprint.model,
-   javax.print.attribute"
+   javax.print.attribute",
+ printProvider,
+ providerImpl
 Automatic-Module-Name: beluga.serverprint
