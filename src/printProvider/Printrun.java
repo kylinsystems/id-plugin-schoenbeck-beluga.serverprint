@@ -1,8 +1,10 @@
 package printProvider;
 
+import de.schoenbeck.serverprint.work.PrinterConfig;
+
 public interface Printrun {
 
-	public void run () throws Exception;
+	public void run (PrinterConfig conf) throws Exception;
 	
 	/**
 	 * 

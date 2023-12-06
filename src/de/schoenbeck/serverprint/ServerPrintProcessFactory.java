@@ -16,6 +16,7 @@ import org.adempiere.base.IProcessFactory;
 import org.compiere.process.ProcessCall;
 
 import de.schoenbeck.serverprint.entry.ServerPrintProcess;
+import printProvider.ServerPrintPrinterLookupProcess;
 
 public class ServerPrintProcessFactory implements IProcessFactory {
 
@@ -26,6 +27,8 @@ public class ServerPrintProcessFactory implements IProcessFactory {
 			return new ServerPrintProcess();
 		} else if ("de.schoenbeck.serverprint.ServerPrintLookupProcess".equalsIgnoreCase(className)) {
 			return new ServerPrintLookupProcess();
+		} else if ("de.schoenbeck.serverprint.ServerPrintPrinterLookupProcess".equalsIgnoreCase(className)) {
+			return new ServerPrintPrinterLookupProcess();
 		}
 		return null;
 	}

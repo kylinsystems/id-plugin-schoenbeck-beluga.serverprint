@@ -25,8 +25,19 @@ Bundle-ClassPath: .,
  lib/jcommon-1.0.23.jar
 Bundle-Activator: org.adempiere.plugin.utils.AdempiereActivator
 Bundle-ActivationPolicy: lazy
-Export-Package: de.schoenbeck.serverprint,
+Export-Package: de.schoenbeck.serverprint;uses:="org.adempiere.base,org.compiere.process",
+ de.schoenbeck.serverprint.entry;uses:="org.adempiere.webui.action,org.compiere.process",
+ de.schoenbeck.serverprint.exceptions,
+ de.schoenbeck.serverprint.helper;
+  uses:="org.compiere.model,
+   org.adempiere.webui.window,
+   javax.print.attribute,
+   javax.activation",
+ de.schoenbeck.serverprint.model;uses:="org.compiere.util,org.compiere.model,org.adempiere.base",
  de.schoenbeck.serverprint.params,
- de.schoenbeck.serverprint.work,
- printProvider
+ de.schoenbeck.serverprint.work;
+  uses:="de.schoenbeck.serverprint.params,
+   javax.print,
+   de.schoenbeck.serverprint.model,
+   javax.print.attribute"
 Automatic-Module-Name: beluga.serverprint
