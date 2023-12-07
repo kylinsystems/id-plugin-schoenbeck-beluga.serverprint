@@ -7,6 +7,12 @@ import de.schoenbeck.serverprint.work.PrinterConfig;
 import printProvider.PrinterLookup;
 import printProvider.Printrun;
 
+@org.osgi.service.component.annotations.Component(
+		name = "beluga.serverprint.provider.cups",
+		immediate = true,
+		service = {Printrun.class, PrinterLookup.class},
+		property = {"service.ranking:Integer=1"}
+		)
 public class CupsProvImpl implements Printrun, PrinterLookup {
 
 	@Override

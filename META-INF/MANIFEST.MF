@@ -16,7 +16,8 @@ Require-Bundle: org.adempiere.base;bundle-version="5.1.0",
  com.sun.activation.jakarta.activation;bundle-version="1.2.1"
 Import-Package: org.apache.commons.codec;version="1.9.0",
  org.apache.commons.codec.binary;version="1.9.0",
- org.jfree.io
+ org.jfree.io,
+ org.osgi.service.component.annotations;version="1.3.0"
 Bundle-ClassPath: .,
  lib/commons-codec-1.2.jar,
  lib/commons-httpclient-3.1.jar,
