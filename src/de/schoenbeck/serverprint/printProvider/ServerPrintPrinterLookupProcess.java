@@ -1,4 +1,4 @@
-package printProvider;
+package de.schoenbeck.serverprint.printProvider;
 
 import java.util.HashSet;
 import java.util.NoSuchElementException;

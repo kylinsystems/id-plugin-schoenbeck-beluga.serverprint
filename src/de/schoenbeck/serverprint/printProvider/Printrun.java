@@ -1,4 +1,4 @@
-package printProvider;
+package de.schoenbeck.serverprint.printProvider;
 
 import de.schoenbeck.serverprint.work.PrinterConfig;
 

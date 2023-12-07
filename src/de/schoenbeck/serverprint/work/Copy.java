@@ -22,7 +22,6 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import javax.activation.FileDataSource;
-import javax.management.RuntimeErrorException;
 import javax.print.PrintService;
 import javax.print.attribute.Attribute;
 import javax.print.attribute.EnumSyntax;
@@ -53,7 +52,6 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.jfree.io.IOUtils;
 
-import de.lohndirekt.print.IppPrintService;
 import de.lohndirekt.print.attribute.IppAttributeName;
 import de.lohndirekt.print.attribute.ipp.jobtempl.LdMediaTray;
 import de.schoenbeck.serverprint.exceptions.CalledFromProcessException;
@@ -66,7 +64,7 @@ import de.schoenbeck.serverprint.helper.SBSP_EMailDialog;
 import de.schoenbeck.serverprint.model.MPrinter;
 import de.schoenbeck.serverprint.model.MPrinterProvider;
 import de.schoenbeck.serverprint.params.ServerPrintCopyParam;
-import printProvider.ServerPrintProcessManager;
+import de.schoenbeck.serverprint.printProvider.ServerPrintProcessManager;
 
 public class Copy {
 

@@ -55,7 +55,7 @@ public class MPrinterProvider extends X_sbsp_printerprovider {
 	}
 	
 	public int[] getKnownPrinterIDs() {
-		final String where = MPrinterProvider.Table_Name + " = ?";
+		final String where = MPrinter.COLUMNNAME_sbsp_printerprovider_ID + " = ?";
 		
 		return new Query(getCtx(), MPrinter.Table_Name, where, get_TrxName())
 				.setParameters(get_ID())

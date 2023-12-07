@@ -16,7 +16,7 @@ import org.adempiere.base.IProcessFactory;
 import org.compiere.process.ProcessCall;
 
 import de.schoenbeck.serverprint.entry.ServerPrintProcess;
-import printProvider.ServerPrintPrinterLookupProcess;
+import de.schoenbeck.serverprint.printProvider.ServerPrintPrinterLookupProcess;
 
 public class ServerPrintProcessFactory implements IProcessFactory {
 

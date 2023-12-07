@@ -31,7 +31,7 @@ public class X_sbsp_printconfig_entry extends PO implements I_sbsp_printconfig_e
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231130L;
+	private static final long serialVersionUID = 20231207L;
 
     /** Standard Constructor */
     public X_sbsp_printconfig_entry (Properties ctx, int sbsp_printconfig_entry_ID, String trxName)

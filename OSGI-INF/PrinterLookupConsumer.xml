@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="PrinterLookupConsumer">
-   <implementation class="printProvider.ServerPrintProcessManager" />
-   <reference bind="bind" cardinality="0..n" interface="printProvider.PrinterLookup" name="PrinterLookup" unbind="unbind"/>
-</scr:component>

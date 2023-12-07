@@ -31,7 +31,7 @@ public class X_sbsp_copy extends PO implements I_sbsp_copy, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231130L;
+	private static final long serialVersionUID = 20231207L;
 
     /** Standard Constructor */
     public X_sbsp_copy (Properties ctx, int sbsp_copy_ID, String trxName)

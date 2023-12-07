@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="de.schoenbeck.serverprint.ProcessManagerConsumers">
+   <implementation class="de.schoenbeck.serverprint.printProvider.ServerPrintProcessManager" />
+   <reference cardinality="0..n" interface="de.schoenbeck.serverprint.printProvider.PrinterLookup" name="PrinterLookup" policy="dynamic"/>
+   <reference cardinality="0..n" interface="de.schoenbeck.serverprint.printProvider.Printrun" name="Printrun" policy="dynamic"/>
+</scr:component>
