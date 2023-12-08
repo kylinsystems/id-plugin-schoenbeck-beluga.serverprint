@@ -4,26 +4,21 @@ import java.io.InputStream;
 
 import de.schoenbeck.serverprint.model.MPrinter;
 import de.schoenbeck.serverprint.model.MPrinterProvider;
+import de.schoenbeck.serverprint.params.ServerPrintCopyParam;
 
 public class PrinterConfig {
-	/*
-	public final DocPrintJob printJob;
-	public final PrintRequestAttributeSet printAttributes;
-	
-	
-	public PrinterConfig (DocPrintJob printJob, PrintService service, int printConfigId) throws SQLException {
-		this.printJob = printJob;
-		this.printAttributes = Copy.getAttributes(service, printConfigId);
-	}
-	*/
 	
 	public final MPrinter printer;
 	public final MPrinterProvider provider;
+	public final ServerPrintCopyParam copyparams;
 	public final InputStream doc;
+	public final int printerconfig_id;
 	
-	public PrinterConfig (MPrinter printer, MPrinterProvider provider, InputStream doc) {
+	public PrinterConfig (MPrinter printer, MPrinterProvider provider, InputStream doc, ServerPrintCopyParam copyparams, int printerconfig_id) {
 		this.printer = printer;
 		this.provider = provider;
+		this.copyparams = copyparams;
 		this.doc = doc;
+		this.printerconfig_id = printerconfig_id;
 	}
 }

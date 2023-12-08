@@ -35,4 +35,14 @@ public class ServerPrintProcessManager implements Serializable {
 		}
 		return Optional.empty();
 	}
+	
+	public static synchronized Optional<AttributeLookup> getAttrLookup (String value) {
+		var list = Service.locator().list(AttributeLookup.class).getServiceReferences();
+		for (var holder : list) {
+			var service = holder.getService();
+			if (service.getProviderValue().equalsIgnoreCase(value))
+				return Optional.of(service);
+		}
+		return Optional.empty();
+	}
 }

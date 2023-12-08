@@ -369,7 +369,7 @@ public class Copy {
 			 + "	        ? ad_org_id, "
 			 + "            ? sbsp_printconfig_id, "
 			 + "            cast (? as numeric) ad_user_id) "
-			 + "SELECT printer.sbsp_printer_id printer, printer.sbsp_printerprovider_id provider, pce.sbsp_printconfig_entry_id config "
+			 + "SELECT printer.sbsp_printer_id printer, printer.sbsp_printerprovider_id provider, pce.sbsp_printerconfig_id config "
 			 + "FROM sbsp_printconfig pc, "
 			 + "     sbsp_printconfig_entry pce, "
 			 + "     sbsp_printer printer, "
@@ -395,8 +395,9 @@ public class Copy {
 			if (rs.next()) { 
 				MPrinter printer = new MPrinter(Env.getCtx(), rs.getInt("printer"), trxName);
 				MPrinterProvider provider = new MPrinterProvider(Env.getCtx(), rs.getInt("provider"), trxName);
+				int printerconfig_id = rs.getInt("config");
 				
-				return new PrinterConfig(printer, provider, doc);
+				return new PrinterConfig(printer, provider, doc, p, printerconfig_id);
 			} 
 			else {
 				String err = determinePrintError(p);

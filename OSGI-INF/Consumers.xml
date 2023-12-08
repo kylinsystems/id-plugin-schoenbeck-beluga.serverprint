@@ -3,4 +3,5 @@
    <implementation class="de.schoenbeck.serverprint.printProvider.ServerPrintProcessManager" />
    <reference cardinality="0..n" interface="de.schoenbeck.serverprint.printProvider.PrinterLookup" name="PrinterLookup" policy="dynamic"/>
    <reference cardinality="0..n" interface="de.schoenbeck.serverprint.printProvider.Printrun" name="Printrun" policy="dynamic"/>
+   <reference cardinality="0..n" interface="de.schoenbeck.serverprint.printProvider.AttributeLookup" name="AttributeLookup" policy="dynamic"/>
 </scr:component>

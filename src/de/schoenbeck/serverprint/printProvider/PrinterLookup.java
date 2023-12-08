@@ -11,7 +11,7 @@ public interface PrinterLookup {
 	 * @param provider_id - The Print Provider's ID in DB
 	 * @return A list of printers that are available with this provider
 	 */
-	public List<MPrinter> getAvailablePrinters(int provider_id);
+	public List<MPrinter> getAvailablePrinters(int provider_id, String trxName);
 	
 	/**
 	 * 
