@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.ServiceLoader;
 
 import org.adempiere.base.Service;
 
@@ -17,10 +16,10 @@ public class ServerPrintProcessManager implements Serializable {
 	static Map<String, Class<? extends PrinterLookup>> lookup = new HashMap<>();
 	
 	public static synchronized Optional<Printrun> getPrint (String value) {
-		ServiceLoader<Printrun> loader = ServiceLoader.load(Printrun.class);
-		for (var service : loader) {
-			if (service.getProviderValue() == value
-					|| service.getProviderValue().equalsIgnoreCase(value))
+		var list = Service.locator().list(Printrun.class).getServiceReferences();
+		for (var holder : list) {
+			var service = holder.getService();
+			if (service.getProviderValue().equalsIgnoreCase(value))
 				return Optional.of(service);
 		}
 		return Optional.empty();

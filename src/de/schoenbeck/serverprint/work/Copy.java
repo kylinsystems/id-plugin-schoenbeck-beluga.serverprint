@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -16,19 +15,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
 import javax.activation.FileDataSource;
-import javax.print.PrintService;
-import javax.print.attribute.Attribute;
-import javax.print.attribute.EnumSyntax;
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.IntegerSyntax;
-import javax.print.attribute.PrintRequestAttributeSet;
-import javax.print.attribute.TextSyntax;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.report.jasper.ReportStarter;
@@ -52,14 +43,11 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.jfree.io.IOUtils;
 
-import de.lohndirekt.print.attribute.IppAttributeName;
-import de.lohndirekt.print.attribute.ipp.jobtempl.LdMediaTray;
 import de.schoenbeck.serverprint.exceptions.CalledFromProcessException;
 import de.schoenbeck.serverprint.exceptions.InvalidMailAddressException;
 import de.schoenbeck.serverprint.exceptions.MailNotSentException;
 import de.schoenbeck.serverprint.exceptions.NoTemplateException;
 import de.schoenbeck.serverprint.exceptions.TemplateNotFoundException;
-import de.schoenbeck.serverprint.helper.EnumSubtitute;
 import de.schoenbeck.serverprint.helper.SBSP_EMailDialog;
 import de.schoenbeck.serverprint.model.MPrinter;
 import de.schoenbeck.serverprint.model.MPrinterProvider;
@@ -363,7 +351,7 @@ public class Copy {
     	PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
-			String sql = 
+			final String sql = 
 			 "WITH params AS "
 			 + "	(SELECT ? ad_client_id, "
 			 + "	        ? ad_org_id, "
@@ -442,69 +430,6 @@ public class Copy {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	static PrintRequestAttributeSet getAttributes(PrintService service, int printerconfig_id) throws SQLException  {		
-		PrintRequestAttributeSet as = null;
-		String sql = 
-				"select attrname.printerattributename attributename, " +
-				"       coalesce (attrvalue.printerattributevalue, attr.printerattributevalue) attributevalue " + 
-				"  from sbsp_printerconfigattr attr " + 
-				"  left join sbsp_attributename attrname on  attr.sbsp_attributename_id = attrname.sbsp_attributename_id " + 
-				"  left outer join sbsp_attributevalue attrvalue on attr.sbsp_attributevalue_id = attrvalue.sbsp_attributevalue_id " + 
-				"  where attr.sbsp_printerconfig_id = ?";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		
-		pstmt = DB.prepareStatement(sql, null);
-		pstmt.setInt(1, printerconfig_id);
-		
-		rs = pstmt.executeQuery();
-		
-		as = new HashPrintRequestAttributeSet();
-		
-		while(rs.next()) { 
-			
-			
-			String attValue = rs.getString("attributevalue"); 
-			String attName = rs.getString("attributename");
-			
-			if  (rs.getString("attributename").equals("media-source")) {
-				Attribute[] suppAttr = (Attribute[]) service.getSupportedAttributeValues(IppAttributeName.MEDIA_SOURCE_SUPPORTED.getCategory(), null, null);
-				for (Attribute at : suppAttr) {
-					if (at.toString().equals(attValue)) {
-						as.add(new LdMediaTray(attValue));
-						break;
-					}
-				}						
-			} else {
-
-				Object a = null;
-				
-				IppAttributeName ippattribute = IppAttributeName.get(attName);
-				
-				Class<?> attrClass = ippattribute.getAttributeClass(); 
-
-				try {
-					if (TextSyntax.class.isAssignableFrom(attrClass))
-						a = attrClass.getDeclaredConstructor(String.class, Locale.class).newInstance(attValue, new Locale("de_DE"));
-					else if (IntegerSyntax.class.isAssignableFrom(attrClass))
-						a = attrClass.getDeclaredConstructor(int.class).newInstance(Integer.parseInt(attValue));
-					else if (EnumSyntax.class.isAssignableFrom(attrClass))
-						a = new EnumSubtitute(rs.getString("attributename"), attValue);
-					else
-						CLogger.get().warning("Empty attribute");
-				} catch (InvocationTargetException | InstantiationException | IllegalAccessException | IllegalArgumentException | NoSuchMethodException | SecurityException e) {
-					CLogger.get().log(Level.WARNING, "Couldn't create attribute: " + attrClass + " (" + attValue + ")", e);
-				}
-				
-				as.add((Attribute) a);
-			}
-		}
-		DB.close(rs, pstmt);
-        rs = null; pstmt = null;
-		return as;
-	}
-	
 	private static LinkedList<File> collectAttachments (ServerPrintCopyParam p, File[] files) {
 		LinkedList<File> rtn = new LinkedList<>();
 		for (File printedDoc : files)
