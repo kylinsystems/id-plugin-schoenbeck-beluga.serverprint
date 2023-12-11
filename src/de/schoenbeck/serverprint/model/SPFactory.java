@@ -18,6 +18,7 @@ public class SPFactory implements IModelFactory {
 		case MPrinterAttributeValue.Table_Name: return MPrinterAttributeValue.class;
 		case MPrinterConfig.Table_Name: return MPrinterConfig.class;
 		case MPrinterConfigAttr.Table_Name: return MPrinterConfigAttr.class;
+		case MPrinterProvider.Table_Name: return MPrinterProvider.class;
 		}
 		return null;
 	}
@@ -35,6 +36,7 @@ public class SPFactory implements IModelFactory {
 		case MPrinterAttributeValue.Table_Name: return new MPrinterAttributeValue(Env.getCtx(), Record_ID, trxName);
 		case MPrinterConfig.Table_Name: return new MPrinterConfig(Env.getCtx(), Record_ID, trxName);
 		case MPrinterConfigAttr.Table_Name: return new MPrinterConfigAttr(Env.getCtx(), Record_ID, trxName);
+		case MPrinterProvider.Table_Name: return new MPrinterProvider(Env.getCtx(), Record_ID, trxName);
 		}
 		return null;
 	}
@@ -49,6 +51,7 @@ public class SPFactory implements IModelFactory {
 		case MPrinterAttributeValue.Table_Name: return new MPrinterAttributeValue(Env.getCtx(), rs, trxName);
 		case MPrinterConfig.Table_Name: return new MPrinterConfig(Env.getCtx(), rs, trxName);
 		case MPrinterConfigAttr.Table_Name: return new MPrinterConfigAttr(Env.getCtx(), rs, trxName);
+		case MPrinterProvider.Table_Name: return new MPrinterProvider(Env.getCtx(), rs, trxName);
 		}
 		return null;
 	}
