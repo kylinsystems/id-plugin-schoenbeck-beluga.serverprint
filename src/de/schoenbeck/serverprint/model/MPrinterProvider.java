@@ -32,8 +32,8 @@ public class MPrinterProvider extends X_sbsp_printerprovider {
 	}
 
 	public List<MPrinter> getKnownPrinters() {
-		final String sql = "SELECT * FROM " + MPrinter.Table_Name
-						+ " WHERE " + MPrinterProvider.Table_Name + " = ?";
+		final String sql = "SELECT DISTINCT * FROM " + MPrinter.Table_Name
+						+ " WHERE " + MPrinter.COLUMNNAME_sbsp_printerprovider_ID + " = ?";
 		LinkedList<MPrinter> rtn = new LinkedList<>();
 
 		PreparedStatement ps = null;

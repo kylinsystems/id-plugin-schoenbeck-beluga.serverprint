@@ -25,13 +25,14 @@ public class ServerPrintPrinterLookupProcess extends SvrProcess {
 				.orElseThrow( () -> new NoSuchElementException("The provider does not exist.") );
 		var printers = lookupProcess.getAvailablePrinters(record_id, get_TrxName());
 		
-		var knownPrinters = new HashSet<Integer>();
-		for (int i : provider.getKnownPrinterIDs())
-			knownPrinters.add(i);
+		HashSet<MPrinter> knownPrinters = new HashSet<>(provider.getKnownPrinters());
 		
+		outerloop:
 		for (MPrinter p : printers) {
-			if (!knownPrinters.contains(p.get_ID()))
-				p.save();
+			for (var k : knownPrinters)
+				if (p.getValue().equals(k.getValue()))
+					break outerloop;
+			p.save();
 		}
 
 		//TODO: optionally show printers to user and let them select, which to keep
