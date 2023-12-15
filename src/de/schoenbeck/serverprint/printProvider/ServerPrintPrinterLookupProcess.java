@@ -30,7 +30,7 @@ public class ServerPrintPrinterLookupProcess extends SvrProcess {
 		outerloop:
 		for (MPrinter p : printers) {
 			for (var k : knownPrinters)
-				if (p.getValue().equals(k.getValue()))
+				if (p.getPrinterNameIpp().equals(k.getPrinterNameIpp()))
 					break outerloop;
 			p.save();
 		}
