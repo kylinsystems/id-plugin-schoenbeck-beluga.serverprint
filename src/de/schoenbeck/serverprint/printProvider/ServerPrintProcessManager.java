@@ -1,19 +1,21 @@
 package de.schoenbeck.serverprint.printProvider;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 import org.adempiere.base.Service;
 
+/**
+ * Quick access to implementations of
+ * <ul>
+ * <li>{@link AttributeLookup}
+ * <li>{@link PrinterLookup}
+ * <li>{@link Printrun}
+ * </ul>
+ */
 public class ServerPrintProcessManager implements Serializable {
 
 	private static final long serialVersionUID = 7277153172458307683L;
-	
-	//Printer Provider[Value] mapped to Class
-	static Map<String, Class<? extends Printrun>> print = new HashMap<>();
-	static Map<String, Class<? extends PrinterLookup>> lookup = new HashMap<>();
 	
 	public static synchronized Optional<Printrun> getPrint (String value) {
 		var list = Service.locator().list(Printrun.class).getServiceReferences();

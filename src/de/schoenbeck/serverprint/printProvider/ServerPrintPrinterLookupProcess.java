@@ -8,6 +8,11 @@ import org.compiere.process.SvrProcess;
 import de.schoenbeck.serverprint.model.MPrinter;
 import de.schoenbeck.serverprint.model.MPrinterProvider;
 
+/**
+ * Look up all printers at a provider using the printer provider implementation.
+ * <br>
+ * To skip all known printers, the field {@code PrinterNameIpp} is compared.
+ */
 public class ServerPrintPrinterLookupProcess extends SvrProcess {
 
 	int record_id;

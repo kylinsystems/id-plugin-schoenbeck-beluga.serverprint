@@ -18,17 +18,14 @@ public class MPrinterProvider extends X_sbsp_printerprovider {
 
 	public MPrinterProvider(Properties ctx, int sbsp_printerprovider_ID, String trxName) {
 		super(ctx, sbsp_printerprovider_ID, trxName);
-		// TODO Auto-generated constructor stub
 	}
 
 	public MPrinterProvider(Properties ctx, int sbsp_printerprovider_ID, String trxName, String... virtualColumns) {
 		super(ctx, sbsp_printerprovider_ID, trxName, virtualColumns);
-		// TODO Auto-generated constructor stub
 	}
 
 	public MPrinterProvider(Properties ctx, ResultSet rs, String trxName) {
 		super(ctx, rs, trxName);
-		// TODO Auto-generated constructor stub
 	}
 
 	public List<MPrinter> getKnownPrinters() {
