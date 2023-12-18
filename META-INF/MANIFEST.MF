@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: beluga.serverprint
 Bundle-SymbolicName: beluga.serverprint
-Bundle-Version: 4.5.4.qualifier
+Bundle-Version: 5.1.0.qualifier
 Service-Component: OSGI-INF/*.xml
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.adempiere.base;bundle-version="5.1.0",
@@ -17,15 +17,23 @@ Require-Bundle: org.adempiere.base;bundle-version="5.1.0",
 Import-Package: org.apache.commons.codec;version="1.9.0",
  org.apache.commons.codec.binary;version="1.9.0",
  org.jfree.io
-Bundle-ClassPath: .,
- lib/commons-codec-1.2.jar,
- lib/commons-httpclient-3.1.jar,
- lib/commons-logging-1.0.4.jar,
- lib/jspi.jar,
- lib/jcommon-1.0.23.jar
+Bundle-ClassPath: .
 Bundle-Activator: org.adempiere.plugin.utils.AdempiereActivator
 Bundle-ActivationPolicy: lazy
-Export-Package: de.schoenbeck.serverprint,
+Export-Package: de.schoenbeck.serverprint;uses:="org.adempiere.base,org.compiere.process",
+ de.schoenbeck.serverprint.entry;uses:="org.adempiere.webui.action,org.compiere.process",
+ de.schoenbeck.serverprint.exceptions,
+ de.schoenbeck.serverprint.helper;
+  uses:="org.compiere.model,
+   org.adempiere.webui.window,
+   javax.print.attribute,
+   javax.activation",
+ de.schoenbeck.serverprint.model;uses:="org.compiere.util,org.compiere.model,org.adempiere.base",
  de.schoenbeck.serverprint.params,
- de.schoenbeck.serverprint.work
+ de.schoenbeck.serverprint.printProvider,
+ de.schoenbeck.serverprint.work;
+  uses:="de.schoenbeck.serverprint.params,
+   javax.print,
+   de.schoenbeck.serverprint.model,
+   javax.print.attribute"
 Automatic-Module-Name: beluga.serverprint

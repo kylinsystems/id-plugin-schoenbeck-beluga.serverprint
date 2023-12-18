@@ -23,7 +23,7 @@ import org.compiere.model.*;
 
 /** Generated Model for sbsp_printoption
  *  @author iDempiere (generated) 
- *  @version Release 9 - $Id$ */
+ *  @version Release 10 - $Id$ */
 @org.adempiere.base.Model(table="sbsp_printoption")
 public class X_sbsp_printoption extends PO implements I_sbsp_printoption, I_Persistent 
 {
@@ -31,7 +31,7 @@ public class X_sbsp_printoption extends PO implements I_sbsp_printoption, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20230406L;
+	private static final long serialVersionUID = 20231207L;
 
     /** Standard Constructor */
     public X_sbsp_printoption (Properties ctx, int sbsp_printoption_ID, String trxName)

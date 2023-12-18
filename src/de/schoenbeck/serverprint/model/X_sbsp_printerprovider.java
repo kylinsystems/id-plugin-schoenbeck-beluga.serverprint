@@ -21,11 +21,11 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import org.compiere.model.*;
 
-/** Generated Model for sbsp_printer
+/** Generated Model for sbsp_printerprovider
  *  @author iDempiere (generated) 
  *  @version Release 10 - $Id$ */
-@org.adempiere.base.Model(table="sbsp_printer")
-public class X_sbsp_printer extends PO implements I_sbsp_printer, I_Persistent 
+@org.adempiere.base.Model(table="sbsp_printerprovider")
+public class X_sbsp_printerprovider extends PO implements I_sbsp_printerprovider, I_Persistent 
 {
 
 	/**
@@ -34,37 +34,29 @@ public class X_sbsp_printer extends PO implements I_sbsp_printer, I_Persistent
 	private static final long serialVersionUID = 20231207L;
 
     /** Standard Constructor */
-    public X_sbsp_printer (Properties ctx, int sbsp_printer_ID, String trxName)
+    public X_sbsp_printerprovider (Properties ctx, int sbsp_printerprovider_ID, String trxName)
     {
-      super (ctx, sbsp_printer_ID, trxName);
-      /** if (sbsp_printer_ID == 0)
+      super (ctx, sbsp_printerprovider_ID, trxName);
+      /** if (sbsp_printerprovider_ID == 0)
         {
 			setName (null);
-			setValue (null);
-			setlookup (null);
-// 'n'
-			setprinter_uri (null);
-			setsbsp_printer_ID (0);
+			setsbsp_printerprovider_ID (0);
         } */
     }
 
     /** Standard Constructor */
-    public X_sbsp_printer (Properties ctx, int sbsp_printer_ID, String trxName, String ... virtualColumns)
+    public X_sbsp_printerprovider (Properties ctx, int sbsp_printerprovider_ID, String trxName, String ... virtualColumns)
     {
-      super (ctx, sbsp_printer_ID, trxName, virtualColumns);
-      /** if (sbsp_printer_ID == 0)
+      super (ctx, sbsp_printerprovider_ID, trxName, virtualColumns);
+      /** if (sbsp_printerprovider_ID == 0)
         {
 			setName (null);
-			setValue (null);
-			setlookup (null);
-// 'n'
-			setprinter_uri (null);
-			setsbsp_printer_ID (0);
+			setsbsp_printerprovider_ID (0);
         } */
     }
 
     /** Load Constructor */
-    public X_sbsp_printer (Properties ctx, ResultSet rs, String trxName)
+    public X_sbsp_printerprovider (Properties ctx, ResultSet rs, String trxName)
     {
       super (ctx, rs, trxName);
     }
@@ -86,10 +78,34 @@ public class X_sbsp_printer extends PO implements I_sbsp_printer, I_Persistent
 
     public String toString()
     {
-      StringBuilder sb = new StringBuilder ("X_sbsp_printer[")
+      StringBuilder sb = new StringBuilder ("X_sbsp_printerprovider[")
         .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
+
+	public org.compiere.model.I_AD_Process getAD_Process_ID_Print() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
+			.getPO(getAD_Process_ID_Printing(), get_TrxName());
+	}
+
+	/** Set Printing Implementation.
+		@param AD_Process_ID_Printing Printing Implementation
+	*/
+	public void setAD_Process_ID_Printing (int AD_Process_ID_Printing)
+	{
+		set_Value (COLUMNNAME_AD_Process_ID_Printing, Integer.valueOf(AD_Process_ID_Printing));
+	}
+
+	/** Get Printing Implementation.
+		@return Printing Implementation	  */
+	public int getAD_Process_ID_Printing()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Process_ID_Printing);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
 
 	/** Set Description.
 		@param Description Optional short description of the record
@@ -105,6 +121,22 @@ public class X_sbsp_printer extends PO implements I_sbsp_printer, I_Persistent
 	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
+	}
+
+	/** Set Comment/Help.
+		@param Help Comment or Hint
+	*/
+	public void setHelp (String Help)
+	{
+		set_Value (COLUMNNAME_Help, Help);
+	}
+
+	/** Get Comment/Help.
+		@return Comment or Hint
+	  */
+	public String getHelp()
+	{
+		return (String)get_Value(COLUMNNAME_Help);
 	}
 
 	/** Set Name.
@@ -123,22 +155,6 @@ public class X_sbsp_printer extends PO implements I_sbsp_printer, I_Persistent
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
-	/** Set Printer Name.
-		@param PrinterNameIpp Name of the Printer
-	*/
-	public void setPrinterNameIpp (String PrinterNameIpp)
-	{
-		set_Value (COLUMNNAME_PrinterNameIpp, PrinterNameIpp);
-	}
-
-	/** Get Printer Name.
-		@return Name of the Printer
-	  */
-	public String getPrinterNameIpp()
-	{
-		return (String)get_Value(COLUMNNAME_PrinterNameIpp);
-	}
-
 	/** Set Search Key.
 		@param Value Search key for the record in the format required - must be unique
 	*/
@@ -155,20 +171,20 @@ public class X_sbsp_printer extends PO implements I_sbsp_printer, I_Persistent
 		return (String)get_Value(COLUMNNAME_Value);
 	}
 
-	/** Set Lookup Printerattributes.
-		@param lookup Process used for finding IPP printers&#039; attributes
+	/** Set Lookup Printers.
+		@param lookup_printers Lookup the printers behind this provider
 	*/
-	public void setlookup (String lookup)
+	public void setlookup_printers (String lookup_printers)
 	{
-		set_Value (COLUMNNAME_lookup, lookup);
+		set_Value (COLUMNNAME_lookup_printers, lookup_printers);
 	}
 
-	/** Get Lookup Printerattributes.
-		@return Process used for finding IPP printers&#039; attributes
+	/** Get Lookup Printers.
+		@return Lookup the printers behind this provider
 	  */
-	public String getlookup()
+	public String getlookup_printers()
 	{
-		return (String)get_Value(COLUMNNAME_lookup);
+		return (String)get_Value(COLUMNNAME_lookup_printers);
 	}
 
 	/** Set printer password.
@@ -216,48 +232,6 @@ public class X_sbsp_printer extends PO implements I_sbsp_printer, I_Persistent
 		return (String)get_Value(COLUMNNAME_printer_username);
 	}
 
-	/** Set Printer.
-		@param sbsp_printer_ID Printer
-	*/
-	public void setsbsp_printer_ID (int sbsp_printer_ID)
-	{
-		if (sbsp_printer_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_sbsp_printer_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_sbsp_printer_ID, Integer.valueOf(sbsp_printer_ID));
-	}
-
-	/** Get Printer.
-		@return Printer	  */
-	public int getsbsp_printer_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_sbsp_printer_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set sbsp_printer_UU.
-		@param sbsp_printer_UU sbsp_printer_UU
-	*/
-	public void setsbsp_printer_UU (String sbsp_printer_UU)
-	{
-		set_ValueNoCheck (COLUMNNAME_sbsp_printer_UU, sbsp_printer_UU);
-	}
-
-	/** Get sbsp_printer_UU.
-		@return sbsp_printer_UU	  */
-	public String getsbsp_printer_UU()
-	{
-		return (String)get_Value(COLUMNNAME_sbsp_printer_UU);
-	}
-
-	public I_sbsp_printerprovider getsbsp_printerprovider() throws RuntimeException
-	{
-		return (I_sbsp_printerprovider)MTable.get(getCtx(), I_sbsp_printerprovider.Table_ID)
-			.getPO(getsbsp_printerprovider_ID(), get_TrxName());
-	}
-
 	/** Set Printer Provider.
 		@param sbsp_printerprovider_ID Printer Provider
 	*/
@@ -277,5 +251,20 @@ public class X_sbsp_printer extends PO implements I_sbsp_printer, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set sbsp_printerprovider_UU.
+		@param sbsp_printerprovider_UU sbsp_printerprovider_UU
+	*/
+	public void setsbsp_printerprovider_UU (String sbsp_printerprovider_UU)
+	{
+		set_Value (COLUMNNAME_sbsp_printerprovider_UU, sbsp_printerprovider_UU);
+	}
+
+	/** Get sbsp_printerprovider_UU.
+		@return sbsp_printerprovider_UU	  */
+	public String getsbsp_printerprovider_UU()
+	{
+		return (String)get_Value(COLUMNNAME_sbsp_printerprovider_UU);
 	}
 }

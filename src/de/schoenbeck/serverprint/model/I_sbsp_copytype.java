@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for sbsp_copytype
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 @SuppressWarnings("all")
 public interface I_sbsp_copytype 

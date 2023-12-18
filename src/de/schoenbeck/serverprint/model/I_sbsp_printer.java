@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for sbsp_printer
  *  @author iDempiere (generated) 
- *  @version Release 9
+ *  @version Release 10
  */
 @SuppressWarnings("all")
 public interface I_sbsp_printer 
@@ -220,4 +220,15 @@ public interface I_sbsp_printer
 
 	/** Get sbsp_printer_UU	  */
 	public String getsbsp_printer_UU();
+
+    /** Column name sbsp_printerprovider_ID */
+    public static final String COLUMNNAME_sbsp_printerprovider_ID = "sbsp_printerprovider_ID";
+
+	/** Set Printer Provider	  */
+	public void setsbsp_printerprovider_ID (int sbsp_printerprovider_ID);
+
+	/** Get Printer Provider	  */
+	public int getsbsp_printerprovider_ID();
+
+	public I_sbsp_printerprovider getsbsp_printerprovider() throws RuntimeException;
 }

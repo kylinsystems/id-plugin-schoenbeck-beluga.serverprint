@@ -5,8 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -16,27 +15,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
 import javax.activation.FileDataSource;
-import javax.print.Doc;
-import javax.print.DocFlavor;
-import javax.print.DocPrintJob;
-import javax.print.PrintService;
-import javax.print.SimpleDoc;
-import javax.print.attribute.Attribute;
-import javax.print.attribute.EnumSyntax;
-import javax.print.attribute.HashDocAttributeSet;
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.IntegerSyntax;
-import javax.print.attribute.PrintRequestAttributeSet;
-import javax.print.attribute.TextSyntax;
-import javax.print.attribute.standard.Copies;
-import javax.print.attribute.standard.JobName;
-import javax.print.attribute.standard.RequestingUserName;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.report.jasper.ReportStarter;
@@ -51,30 +34,25 @@ import org.compiere.model.MTable;
 import org.compiere.model.MUser;
 import org.compiere.model.MUserMail;
 import org.compiere.model.PrintInfo;
-import org.compiere.print.PrintUtil;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.EMail;
 import org.compiere.util.Env;
-import org.compiere.util.Language;
 import org.compiere.util.Msg;
 import org.jfree.io.IOUtils;
 
-import de.lohndirekt.print.IppPrintService;
-import de.lohndirekt.print.IppPrintServiceLookup;
-import de.lohndirekt.print.attribute.IppAttributeName;
-import de.lohndirekt.print.attribute.auth.RequestingUserPassword;
-import de.lohndirekt.print.attribute.ipp.jobtempl.LdMediaTray;
 import de.schoenbeck.serverprint.exceptions.CalledFromProcessException;
 import de.schoenbeck.serverprint.exceptions.InvalidMailAddressException;
 import de.schoenbeck.serverprint.exceptions.MailNotSentException;
 import de.schoenbeck.serverprint.exceptions.NoTemplateException;
 import de.schoenbeck.serverprint.exceptions.TemplateNotFoundException;
-import de.schoenbeck.serverprint.helper.EnumSubtitute;
 import de.schoenbeck.serverprint.helper.SBSP_EMailDialog;
+import de.schoenbeck.serverprint.model.MPrinter;
+import de.schoenbeck.serverprint.model.MPrinterProvider;
 import de.schoenbeck.serverprint.params.ServerPrintCopyParam;
+import de.schoenbeck.serverprint.printProvider.ServerPrintProcessManager;
 
 public class Copy {
 
@@ -276,16 +254,22 @@ public class Copy {
 	}
 	
 	private static void print (ServerPrintCopyParam p, File printedDoc) throws Exception {
-		
-		PrinterConfig preparedPrintConfig = printPreparation(p);
-		
-		Doc doc = new SimpleDoc(new FileInputStream(printedDoc),
-				DocFlavor.INPUT_STREAM.PDF,
-				new HashDocAttributeSet());
-		// we are setting the doc and the job attributes
-		preparedPrintConfig.printJob.print(doc, preparedPrintConfig.printAttributes);
-		
-		System.out.println("printing successfull...");               
+		PrinterConfig conf = printPreparation(p, new FileInputStream(printedDoc), null); //TODO: pass trxname
+		try {
+			ServerPrintProcessManager.getPrint(conf.provider.getValue())
+				.ifPresentOrElse(
+						(pRun) -> {try {
+							pRun.run(conf);
+						} catch (Exception e) {
+							throw new RuntimeException(e);
+						}}, 
+						() -> {throw new RuntimeException("No implementation for such provider");}
+				);
+		} catch (RuntimeException e) {
+			if (e.getCause() instanceof Exception)
+				throw (Exception) e.getCause();
+			else throw e;
+		}
 	}
 	
 	private static void sendMail (ServerPrintCopyParam p, File[] printedDoc) throws Exception {
@@ -361,41 +345,35 @@ public class Copy {
 	
 	
 	// HELPER METHODS ////
-	private static PrinterConfig printPreparation (ServerPrintCopyParam p) throws Exception {
-		// void is incorrect
-		// this is supposed to return the correct print profile
-		// possibly this should be moved to the very beginning
+	private static PrinterConfig printPreparation (ServerPrintCopyParam p, InputStream doc, String trxName) throws Exception {
 		
 		/* first retrieve the information for this printconfiguration */
-    	PrintService service = null;
-		PreparedStatement pstmt = null;
-		int printerconfig_id = 0; 
+    	PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
-			String sql = 
-			 "with params as" + 
-			 "     (select ? ad_client_id," + 
-			 "             ? ad_org_id," + 
-			 "             ? sbsp_printconfig_id," + 
-			 "             cast (? as numeric) ad_user_id)" + 
-			 " select printer.printernameipp printername, printer.printer_uri, printer.printer_username, printer.printer_password," + 
-			 "       pce.sbsp_printerconfig_id " + 
-			 " from sbsp_printconfig pc," + 
-			 "      sbsp_printconfig_entry pce," + 
-			 "      sbsp_printer printer," + 
-			 "      params " + 
-			 " where pc.sbsp_printconfig_id = params.sbsp_printconfig_id " + 
-			 "  and pc.isactive = 'Y' " + 
-			 "  and pce.ad_client_id = params.ad_client_id " + 
-			 "  and (pce.ad_org_id = 0 or pce.ad_org_id = params.ad_org_id)" + 
-			 "  and pce.sbsp_printconfig_id = params.sbsp_printconfig_id " + 
-			 "  and (pce.ad_user_id = params.ad_user_id or pce.isstandardprintconfig = 'Y')" + 
-			 "  and pce.isactive = 'Y' " + 
-			 "  and printer.sbsp_printer_id = pce.sbsp_printer_id " + 
-			 "order by pce.isstandardprintconfig asc " + 
-			 "fetch first row only"; 
+			final String sql = 
+			 "WITH params AS "
+			 + "	(SELECT ? ad_client_id, "
+			 + "	        ? ad_org_id, "
+			 + "            ? sbsp_printconfig_id, "
+			 + "            cast (? as numeric) ad_user_id) "
+			 + "SELECT printer.sbsp_printer_id printer, printer.sbsp_printerprovider_id provider, pce.sbsp_printerconfig_id config "
+			 + "FROM sbsp_printconfig pc, "
+			 + "     sbsp_printconfig_entry pce, "
+			 + "     sbsp_printer printer, "
+			 + "     params "
+			 + "WHERE pc.sbsp_printconfig_id = params.sbsp_printconfig_id "
+			 + "	AND pc.isactive = 'Y' "
+			 + "	AND pce.ad_client_id = params.ad_client_id "
+			 + "	AND (pce.ad_org_id = 0 or pce.ad_org_id = params.ad_org_id) "
+			 + "	AND pce.sbsp_printconfig_id = params.sbsp_printconfig_id "
+			 + "	AND (pce.ad_user_id = params.ad_user_id or pce.isstandardprintconfig = 'Y') "
+			 + "	AND pce.isactive = 'Y' "
+			 + "	AND printer.sbsp_printer_id = pce.sbsp_printer_id "
+			 + "ORDER BY pce.isstandardprintconfig ASC "
+			 + "FETCH FIRST ROW ONLY"; 
 			
-			pstmt = DB.prepareStatement(sql, null);
+			pstmt = DB.prepareStatement(sql, trxName);
 			pstmt.setInt(1, p.ad_client_id);
 			pstmt.setInt(2, p.ad_org_id);
 			pstmt.setInt(3, p.sbsp_printconfig_id);
@@ -403,54 +381,11 @@ public class Copy {
 			rs = pstmt.executeQuery();
 			
 			if (rs.next()) { 
-				String printername = rs.getString("printername");
-				printerconfig_id = rs.getInt("sbsp_printerconfig_id");
-				if (printername != null && !printername.equals("")) {
-					System.getProperties().setProperty(IppPrintServiceLookup.URI_KEY, rs.getString("printer_uri")); //$NON-NLS-1$
-					System.getProperties().setProperty(IppPrintServiceLookup.USERNAME_KEY, nvl(rs.getString("printer_username"))); //$NON-NLS-1$
-					System.getProperties().setProperty(IppPrintServiceLookup.PASSWORD_KEY, nvl(rs.getString("printer_password"))); //$NON-NLS-1$
-
-					PrintService[] services = new IppPrintServiceLookup().getPrintServices();
-					if (services != null && services.length > 0)
-						for (PrintService s : services) {
-							if (s.getName().equals(printername)) {
-								service = s;
-								break;
-							}
-						}
-				}
-				//If the url is not a server or no name is given, try direct connection
-				if (service == null) {
-					CLogger.get().info("Trying direct connection");
-					URI uri = new URI(rs.getString("printer_uri"));
-					service = new IppPrintService(uri);
-
-					((IppPrintService) service).setRequestingUserName(new RequestingUserName(nvl(rs.getString("printer_username")), null));
-					((IppPrintService) service).setRequestingUserPassword(new RequestingUserPassword(nvl(rs.getString("printer_password")), null));
-				}
+				MPrinter printer = new MPrinter(Env.getCtx(), rs.getInt("printer"), trxName);
+				MPrinterProvider provider = new MPrinterProvider(Env.getCtx(), rs.getInt("provider"), trxName);
+				int printerconfig_id = rs.getInt("config");
 				
-				
-				try {
-					testIppPrinter((IppPrintService) service);
-				} catch (ClassCastException e) {
-					CLogger.get().log(Level.WARNING, "Failed to cast printservice to " + IppPrintService.class.getCanonicalName(), e);
-				}
-				
-		    	DocPrintJob printerJob = service.createPrintJob();
-		    	PrintRequestAttributeSet prats = getAttributes(service, printerconfig_id);	
-		    		    
-				prats.add (new Copies(p.copies));
-				Locale locale = Language.getLoginLanguage().getLocale();
-				
-				prats.add(new JobName(Integer.toString(p.record_id), locale));
-				prats.add(PrintUtil.getJobPriority(1, p.copies, false));
-				
-				//prats.add(getMedia(printer, paper));
-				
-				//PrintService s = printerJob.getPrintService();
-				//s.getSupportedDocFlavors();
-				
-				return new PrinterConfig(printerJob, service, printerconfig_id);
+				return new PrinterConfig(printer, provider, doc, p, printerconfig_id);
 			} 
 			else {
 				String err = determinePrintError(p);
@@ -495,87 +430,7 @@ public class Copy {
 		}
 	}
 
-	private static String nvl (String s) {
-		return (s == null) ? "" : s;
-	}
-	
-	@SuppressWarnings("unchecked")
-	static PrintRequestAttributeSet getAttributes(PrintService service, int printerconfig_id) throws SQLException  {		
-		PrintRequestAttributeSet as = null;
-		String sql = 
-				"select attrname.printerattributename attributename, " +
-				"       coalesce (attrvalue.printerattributevalue, attr.printerattributevalue) attributevalue " + 
-				"  from sbsp_printerconfigattr attr " + 
-				"  left join sbsp_attributename attrname on  attr.sbsp_attributename_id = attrname.sbsp_attributename_id " + 
-				"  left outer join sbsp_attributevalue attrvalue on attr.sbsp_attributevalue_id = attrvalue.sbsp_attributevalue_id " + 
-				"  where attr.sbsp_printerconfig_id = ?";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		
-		pstmt = DB.prepareStatement(sql, null);
-		pstmt.setInt(1, printerconfig_id);
-		
-		rs = pstmt.executeQuery();
-		
-		as = new HashPrintRequestAttributeSet();
-		
-		while(rs.next()) { 
-			
-			
-			String attValue = rs.getString("attributevalue"); 
-			String attName = rs.getString("attributename");
-			
-			if  (rs.getString("attributename").equals("media-source")) {
-				Attribute[] suppAttr = (Attribute[]) service.getSupportedAttributeValues(IppAttributeName.MEDIA_SOURCE_SUPPORTED.getCategory(), null, null);
-				for (Attribute at : suppAttr) {
-					if (at.toString().equals(attValue)) {
-						as.add(new LdMediaTray(attValue));
-						break;
-					}
-				}						
-			} else {
-
-				Object a = null;
-				
-				IppAttributeName ippattribute = IppAttributeName.get(attName);
-				
-				Class<?> attrClass = ippattribute.getAttributeClass(); 
-
-				try {
-					if (TextSyntax.class.isAssignableFrom(attrClass))
-						a = attrClass.getDeclaredConstructor(String.class, Locale.class).newInstance(attValue, new Locale("de_DE"));
-					else if (IntegerSyntax.class.isAssignableFrom(attrClass))
-						a = attrClass.getDeclaredConstructor(int.class).newInstance(Integer.parseInt(attValue));
-					else if (EnumSyntax.class.isAssignableFrom(attrClass))
-						a = new EnumSubtitute(rs.getString("attributename"), attValue);
-					else
-						CLogger.get().warning("Empty attribute");
-				} catch (InvocationTargetException | InstantiationException | IllegalAccessException | IllegalArgumentException | NoSuchMethodException | SecurityException e) {
-					CLogger.get().log(Level.WARNING, "Couldn't create attribute: " + attrClass + " (" + attValue + ")", e);
-				}
-				
-				as.add((Attribute) a);
-			}
-		}
-		DB.close(rs, pstmt);
-        rs = null; pstmt = null;
-		return as;
-	}
-	
-	/**
-     * Send a simple request to an Ipp Printer to check if it answers
-     * @param service - The printservice to be checked
-     */
-    private static void testIppPrinter(IppPrintService service) {
-		try {
-			service.getSupportedAttributeCategories();
-		} catch (NullPointerException e) {
-			CLogger.get().warning("Printer not reachable: " + service);
-			throw e;
-		}
-	}
-    
-    private static LinkedList<File> collectAttachments (ServerPrintCopyParam p, File[] files) {
+	private static LinkedList<File> collectAttachments (ServerPrintCopyParam p, File[] files) {
 		LinkedList<File> rtn = new LinkedList<>();
 		for (File printedDoc : files)
 			rtn.add(printedDoc);
