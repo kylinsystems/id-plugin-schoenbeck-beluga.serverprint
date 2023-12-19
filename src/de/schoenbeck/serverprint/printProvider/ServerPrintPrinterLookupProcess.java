@@ -26,7 +26,7 @@ public class ServerPrintPrinterLookupProcess extends SvrProcess {
 	protected String doIt() throws Exception {
 		
 		MPrinterProvider provider = new MPrinterProvider(getCtx(), record_id, get_TrxName());
-		PrinterLookup lookupProcess = ServerPrintProcessManager.getLookup(provider.getValue())
+		PrinterLookup lookupProcess = ServerPrintProcessManager.getLookup(provider.getProtocol())
 				.orElseThrow( () -> new NoSuchElementException("The provider does not exist.") );
 		var printers = lookupProcess.getAvailablePrinters(record_id, get_TrxName());
 		

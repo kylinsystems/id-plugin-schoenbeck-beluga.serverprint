@@ -256,7 +256,7 @@ public class Copy {
 	private static void print (ServerPrintCopyParam p, File printedDoc) throws Exception {
 		PrinterConfig conf = printPreparation(p, new FileInputStream(printedDoc), null); //TODO: pass trxname
 		try {
-			ServerPrintProcessManager.getPrint(conf.provider.getValue())
+			ServerPrintProcessManager.getPrint(conf.provider.getProtocol())
 				.ifPresentOrElse(
 						(pRun) -> {try {
 							pRun.run(conf);

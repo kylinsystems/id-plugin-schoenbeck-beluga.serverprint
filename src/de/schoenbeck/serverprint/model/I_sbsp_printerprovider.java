@@ -64,17 +64,6 @@ public interface I_sbsp_printerprovider
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name AD_Process_ID_Printing */
-    public static final String COLUMNNAME_AD_Process_ID_Printing = "AD_Process_ID_Printing";
-
-	/** Set Printing Implementation	  */
-	public void setAD_Process_ID_Printing (int AD_Process_ID_Printing);
-
-	/** Get Printing Implementation	  */
-	public int getAD_Process_ID_Printing();
-
-	public org.compiere.model.I_AD_Process getAD_Process_ID_Print() throws RuntimeException;
-
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -142,6 +131,19 @@ public interface I_sbsp_printerprovider
 	  * Alphanumeric identifier of the entity
 	  */
 	public String getName();
+
+    /** Column name Protocol */
+    public static final String COLUMNNAME_Protocol = "Protocol";
+
+	/** Set Protocol.
+	  * Protocol
+	  */
+	public void setProtocol (String Protocol);
+
+	/** Get Protocol.
+	  * Protocol
+	  */
+	public String getProtocol();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

@@ -31,7 +31,7 @@ public class X_sbsp_printerprovider extends PO implements I_sbsp_printerprovider
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231207L;
+	private static final long serialVersionUID = 20231219L;
 
     /** Standard Constructor */
     public X_sbsp_printerprovider (Properties ctx, int sbsp_printerprovider_ID, String trxName)
@@ -40,6 +40,7 @@ public class X_sbsp_printerprovider extends PO implements I_sbsp_printerprovider
       /** if (sbsp_printerprovider_ID == 0)
         {
 			setName (null);
+			setProtocol (null);
 			setsbsp_printerprovider_ID (0);
         } */
     }
@@ -51,6 +52,7 @@ public class X_sbsp_printerprovider extends PO implements I_sbsp_printerprovider
       /** if (sbsp_printerprovider_ID == 0)
         {
 			setName (null);
+			setProtocol (null);
 			setsbsp_printerprovider_ID (0);
         } */
     }
@@ -82,30 +84,6 @@ public class X_sbsp_printerprovider extends PO implements I_sbsp_printerprovider
         .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
-
-	public org.compiere.model.I_AD_Process getAD_Process_ID_Print() throws RuntimeException
-	{
-		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
-			.getPO(getAD_Process_ID_Printing(), get_TrxName());
-	}
-
-	/** Set Printing Implementation.
-		@param AD_Process_ID_Printing Printing Implementation
-	*/
-	public void setAD_Process_ID_Printing (int AD_Process_ID_Printing)
-	{
-		set_Value (COLUMNNAME_AD_Process_ID_Printing, Integer.valueOf(AD_Process_ID_Printing));
-	}
-
-	/** Get Printing Implementation.
-		@return Printing Implementation	  */
-	public int getAD_Process_ID_Printing()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Process_ID_Printing);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
 
 	/** Set Description.
 		@param Description Optional short description of the record
@@ -153,6 +131,22 @@ public class X_sbsp_printerprovider extends PO implements I_sbsp_printerprovider
 	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
+	}
+
+	/** Set Protocol.
+		@param Protocol Protocol
+	*/
+	public void setProtocol (String Protocol)
+	{
+		set_Value (COLUMNNAME_Protocol, Protocol);
+	}
+
+	/** Get Protocol.
+		@return Protocol
+	  */
+	public String getProtocol()
+	{
+		return (String)get_Value(COLUMNNAME_Protocol);
 	}
 
 	/** Set Search Key.

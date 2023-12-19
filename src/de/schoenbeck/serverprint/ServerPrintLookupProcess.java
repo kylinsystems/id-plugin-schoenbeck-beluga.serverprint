@@ -23,7 +23,7 @@ public class ServerPrintLookupProcess extends SvrProcess {
 	protected String doIt() throws Exception {
 		
 		try {
-			ServerPrintProcessManager.getAttrLookup(printer.getsbsp_printerprovider().getValue())
+			ServerPrintProcessManager.getAttrLookup(printer.getsbsp_printerprovider().getProtocol())
 				.ifPresentOrElse(
 						(pRun) -> {try {
 							pRun.lookupAttributes(printer, get_TrxName());
