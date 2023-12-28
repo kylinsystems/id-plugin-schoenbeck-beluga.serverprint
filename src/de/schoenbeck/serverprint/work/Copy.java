@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.activation.FileDataSource;
 
@@ -33,6 +35,7 @@ import org.compiere.model.MProcess;
 import org.compiere.model.MTable;
 import org.compiere.model.MUser;
 import org.compiere.model.MUserMail;
+import org.compiere.model.PO;
 import org.compiere.model.PrintInfo;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoParameter;
@@ -222,9 +225,19 @@ public class Copy {
 		if (p.exportFilenamePattern == null || p.exportFilenamePattern.equals(""))
 			return null;
 		
+		PO record = MTable.get(p.ad_table_id).getPO(p.record_id, null);
+		
 		String rtn = p.exportFilenamePattern;
-		if (p.windowno > 0)
-			rtn = Env.parseContext(Env.getCtx(), p.windowno, p.exportFilenamePattern, false, true);
+		
+		final Matcher replacements = Pattern.compile("@\\$([^@ \\n]+)@").matcher(rtn);
+		while (replacements.find()) {
+			int index = record.get_ColumnIndex(replacements.group(1));
+			if (index >= 0)
+				rtn = rtn.replaceFirst(Matcher.quoteReplacement(replacements.group(0)), record.get_Value(index).toString());
+		}
+		
+		rtn = Env.parseContext(Env.getCtx(), p.windowno, rtn, false, true);
+		
 		return rtn;
 	}
 	
