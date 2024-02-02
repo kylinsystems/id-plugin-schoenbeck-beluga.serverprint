@@ -115,7 +115,7 @@ public class ServerPrintWorker {
 						.build());
 				
 				if (params.length > 1)
-					copyparams.addAll(getSubParams(Arrays.copyOfRange(params, 1, params.length)));
+					copyparams.addAll(getSubParams(Arrays.copyOfRange(params, 1, params.length), params[0].sbsp_printoption_id));
 				
 				copies.add(new Copy(copyparams.toArray(new ServerPrintCopyParam[copyparams.size()])));
 			}
@@ -222,7 +222,7 @@ public class ServerPrintWorker {
 		return rtn == null ? 0 : (Integer) rtn;
 	}
 
-	private List<ServerPrintCopyParam> getSubParams (ServerPrintWorkerParam[] subParams) throws SQLException {
+	private List<ServerPrintCopyParam> getSubParams (ServerPrintWorkerParam[] subParams, int printoption_id) throws SQLException {
 		LinkedList<ServerPrintCopyParam> rtn = new LinkedList<>();
 		
 		ResultSet rs = null;
@@ -239,6 +239,10 @@ public class ServerPrintWorker {
 				
 				rs = ps.executeQuery();
 				while (rs.next()) {
+					if (rs.getInt("sbsp_printoption_id") != printoption_id
+							&& rs.getInt("sbsp_printoption_id") != 0)
+						continue;
+					
 					rtn.add(new ServerPrintCopyParamBuilder(trxName)
 					.setFromResultSet(rs)
 					.setAd_user_id_bpartner(param.ad_user_id_bpartner)

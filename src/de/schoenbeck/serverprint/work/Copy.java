@@ -18,22 +18,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.activation.FileDataSource;
 
 import org.adempiere.exceptions.AdempiereException;
-import org.adempiere.report.jasper.ReportStarter;
 import org.adempiere.webui.apps.AEnv;
 import org.compiere.model.MArchive;
 import org.compiere.model.MAttachmentEntry;
 import org.compiere.model.MClient;
 import org.compiere.model.MMailText;
 import org.compiere.model.MPInstance;
-import org.compiere.model.MProcess;
 import org.compiere.model.MTable;
 import org.compiere.model.MUser;
 import org.compiere.model.MUserMail;
+import org.compiere.model.PO;
 import org.compiere.model.PrintInfo;
+import org.compiere.print.ServerReportCtl;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.util.CLogger;
@@ -170,38 +172,34 @@ public class Copy {
 	
 	public static File prepareReport (ServerPrintCopyParam p) {
 
-    	ProcessInfoParameter pi1 = new ProcessInfoParameter("C_Doctype_ID", p.c_doctype_id, null,"","");			
-    	ProcessInfoParameter pi2 = new ProcessInfoParameter("ReportVariant", p.reportVariant, null,"","");
-		
-		// Create a process info instance. This is a composite class containing the parameters.
-    	ProcessInfo pi = new ProcessInfo("Document",0,0,0);
-		pi.setParameter(p.c_doctype_id == 0 ? new ProcessInfoParameter[] {pi2} : new ProcessInfoParameter[] {pi1, pi2});
-		pi.setRecord_ID(p.record_id);
-		
-		// Lookup process in the AD, in this case by value
-		MProcess pr = new MProcess(Env.getCtx(), p.ad_process_id, null);
-
-		// Create an instance of the actual process class.
-		ReportStarter process = new ReportStarter();
-
-		// Create process instance (mainly for logging/sync purpose)
+		ProcessInfo reportPI = new ProcessInfo("Document", p.ad_process_id, p.ad_table_id, p.record_id);
+		reportPI.setParameter(new ProcessInfoParameter[] {
+				new ProcessInfoParameter("C_Doctype_ID", p.c_doctype_id, null,"",""),
+				new ProcessInfoParameter("ReportVariant", p.reportVariant, null,"","")
+		});
 		MPInstance mpi = new MPInstance(Env.getCtx(), 0, null);
-		mpi.setAD_Process_ID(pr.get_ID()); 
+		mpi.setAD_Process_ID(p.ad_process_id); 
 		mpi.setRecord_ID(p.record_id);
 		mpi.save();
-
-		// Connect the process to the process instance.
-		pi.setAD_PInstance_ID(mpi.get_ID());
-		pi.setAD_Process_ID(p.ad_process_id);
-		pi.setExport(true);
-		if (p.exportFileExtension != null)
-			pi.setExportFileExtension(p.exportFileExtension);	
-		pi.setTable_ID(p.ad_table_id);
-
-		CLogger.get().info("Starting process " + pr.getName());
-		process.startProcess(Env.getCtx(), pi, null);
-		File export = pi.getExportFile();
+		reportPI.setAD_PInstance_ID(mpi.getAD_PInstance_ID());
+		reportPI.setExport(true);
+		reportPI.setIsBatch(true);
+		reportPI.setPrintPreview(true);
+		reportPI.setReportingProcess(true);
+		if (p.exportFileExtension != null) {
+			reportPI.setExportFileExtension(p.exportFileExtension);
+			reportPI.setReportType(p.exportFileExtension.toUpperCase());
+		}
 		
+		boolean success = ServerReportCtl.start(reportPI);
+		if (!success)
+			throw new AdempiereException("Report Failure");
+		
+		File export = reportPI.getExportFile();
+		if (export == null)
+			export = reportPI.getPDFReport();
+		if (export == null)
+			throw new AdempiereException("No Report returned");
 		
 		String title = createReportTitle(p);
 		if (title == null)
@@ -222,9 +220,19 @@ public class Copy {
 		if (p.exportFilenamePattern == null || p.exportFilenamePattern.equals(""))
 			return null;
 		
+		PO record = MTable.get(p.ad_table_id).getPO(p.record_id, null);
+		
 		String rtn = p.exportFilenamePattern;
-		if (p.windowno > 0)
-			rtn = Env.parseContext(Env.getCtx(), p.windowno, p.exportFilenamePattern, false, true);
+		
+		final Matcher replacements = Pattern.compile("@\\$([^@ \\n]+)@").matcher(rtn);
+		while (replacements.find()) {
+			int index = record.get_ColumnIndex(replacements.group(1));
+			if (index >= 0)
+				rtn = rtn.replaceFirst(Matcher.quoteReplacement(replacements.group(0)), record.get_Value(index).toString());
+		}
+		
+		rtn = Env.parseContext(Env.getCtx(), p.windowno, rtn, false, true);
+		
 		return rtn;
 	}
 	
