@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
+import org.compiere.process.ProcessInfoParameter;
+
 import de.schoenbeck.serverprint.work.Copy;
 
 public class ServerPrintCopyParamBuilder {
@@ -42,6 +44,7 @@ public class ServerPrintCopyParamBuilder {
 	
 	int windowno = 0;
 	boolean isCalledFromProcess = true;
+	ProcessInfoParameter[] processParams = {};
 	public final String trxname;
 	
 	/**
@@ -237,6 +240,11 @@ public class ServerPrintCopyParamBuilder {
 
 	public ServerPrintCopyParamBuilder setCalledFromProcess(boolean isCalledFromProcess) {
 		this.isCalledFromProcess = isCalledFromProcess;
+		return this;
+	}
+	
+	public ServerPrintCopyParamBuilder setProcessParams(ProcessInfoParameter[] params) {
+		this.processParams = params;
 		return this;
 	}
 

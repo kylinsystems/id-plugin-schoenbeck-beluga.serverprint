@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import org.compiere.process.ProcessInfoParameter;
+
 public class ServerPrintCopyParam {
 
 	public final int ad_client_id;
@@ -39,6 +41,7 @@ public class ServerPrintCopyParam {
 	
 	public final int windowno = 0;
 	public final boolean isCalledFromProcess;
+	public final ProcessInfoParameter[] processParams;
 	public final String trxname;
 	
 	
@@ -72,6 +75,7 @@ public class ServerPrintCopyParam {
 		this.isCalledFromProcess = b.isCalledFromProcess;
 		this.trxname = b.trxname;
 		this.sbsp_printoption_id = b.sbsp_printoption_id;
+		this.processParams = b.processParams;
 	}
 
 

@@ -112,6 +112,7 @@ public class ServerPrintWorker {
 						.setAd_table_id(params[0].ad_table_id)
 						.setRecord_id(params[0].record_id)
 						.setCalledFromProcess(isCalledFromProcess)
+						.setProcessParams(params[0].parameter)
 						.build());
 				
 				if (params.length > 1)
@@ -248,6 +249,7 @@ public class ServerPrintWorker {
 					.setAd_user_id_bpartner(param.ad_user_id_bpartner)
 					.setAd_table_id(param.ad_table_id)
 					.setRecord_id(param.record_id)
+					.setProcessParams(param.parameter)
 					.build());
 				}
 			} finally {

@@ -35,9 +35,9 @@ import org.compiere.model.MUser;
 import org.compiere.model.MUserMail;
 import org.compiere.model.PO;
 import org.compiere.model.PrintInfo;
-import org.compiere.print.ServerReportCtl;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoParameter;
+import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.EMail;
@@ -173,10 +173,13 @@ public class Copy {
 	public static File prepareReport (ServerPrintCopyParam p) {
 
 		ProcessInfo reportPI = new ProcessInfo("Document", p.ad_process_id, p.ad_table_id, p.record_id);
-		reportPI.setParameter(new ProcessInfoParameter[] {
-				new ProcessInfoParameter("C_Doctype_ID", p.c_doctype_id, null,"",""),
-				new ProcessInfoParameter("ReportVariant", p.reportVariant, null,"","")
-		});
+		var params = new ProcessInfoParameter[p.processParams.length + 2];
+		params[0] =	new ProcessInfoParameter("C_Doctype_ID", p.c_doctype_id, null,"","");
+		params[1] = new ProcessInfoParameter("ReportVariant", p.reportVariant, null,"","");
+		for (int i = 2; i < params.length; i++)
+			params[i] = p.processParams[i-2];
+		reportPI.setParameter(params);
+		
 		MPInstance mpi = new MPInstance(Env.getCtx(), 0, null);
 		mpi.setAD_Process_ID(p.ad_process_id); 
 		mpi.setRecord_ID(p.record_id);
@@ -191,9 +194,10 @@ public class Copy {
 			reportPI.setReportType(p.exportFileExtension.toUpperCase());
 		}
 		
-		boolean success = ServerReportCtl.start(reportPI);
-		if (!success)
-			throw new AdempiereException("Report Failure");
+		ServerProcessCtl process = new ServerProcessCtl(reportPI, null);
+		process.run();
+		if (reportPI.isError())
+			throw new AdempiereException(Msg.getMsg(Env.getAD_Language(Env.getCtx()), "@Error@") + reportPI.getSummary());
 		
 		File export = reportPI.getExportFile();
 		if (export == null)
@@ -216,6 +220,7 @@ public class Copy {
 	
 	// PRIVATE METHODS ////
 	
+	private static final Pattern TITLE_REPLACE_REGEX = Pattern.compile("@\\$([^@ \\n]+)@");
 	private static String createReportTitle(ServerPrintCopyParam p) {
 		if (p.exportFilenamePattern == null || p.exportFilenamePattern.equals(""))
 			return null;
@@ -224,7 +229,7 @@ public class Copy {
 		
 		String rtn = p.exportFilenamePattern;
 		
-		final Matcher replacements = Pattern.compile("@\\$([^@ \\n]+)@").matcher(rtn);
+		final Matcher replacements = TITLE_REPLACE_REGEX.matcher(rtn);
 		while (replacements.find()) {
 			int index = record.get_ColumnIndex(replacements.group(1));
 			if (index >= 0)
@@ -246,11 +251,7 @@ public class Copy {
 			IOUtils.getInstance().copyStreams(bis, bas);
 		} finally {
 			if (fis != null) {
-				try {
-					fis.close();
-				} catch (IOException e) {
-					CLogger.get().log(Level.WARNING, "", e);
-				}
+				fis.close();
 			}
 		}
 		byte[] data = bas.toByteArray();  
