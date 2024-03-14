@@ -1,5 +1,7 @@
 package de.schoenbeck.serverprint.params;
 
+import org.compiere.process.ProcessInfoParameter;
+
 public class ServerPrintWorkerParamBuilder {
 
 	int ad_client_id = 0;
@@ -12,6 +14,7 @@ public class ServerPrintWorkerParamBuilder {
 	int ad_table_id = 0;
 	int record_id = 0;
 	int sbsp_printoption_id = -1;
+	ProcessInfoParameter[] parameter = {};
 	
 	public ServerPrintWorkerParamBuilder (ServerPrintWorkerParam copyFrom) {
 		this.ad_client_id = copyFrom.ad_client_id;
@@ -71,5 +74,10 @@ public class ServerPrintWorkerParamBuilder {
 	
 	public ServerPrintWorkerParam build () {
 		return new ServerPrintWorkerParam(this);
+	}
+
+	public ServerPrintWorkerParamBuilder setProcessParameters(ProcessInfoParameter[] parameter) {
+		this.parameter = parameter;
+		return this;
 	}
 }

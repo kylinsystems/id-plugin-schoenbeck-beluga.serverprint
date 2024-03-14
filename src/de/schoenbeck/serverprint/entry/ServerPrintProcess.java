@@ -70,6 +70,7 @@ public class ServerPrintProcess extends SvrProcess {
 					.setC_bpartner_id(c_bpartner_id)
 					.setC_doctype_id(c_doctype_id)
 					.setRecord_id(record_id)
+					.setProcessParameters(getParameter())
 					.build();
 		
 		ServerPrintWorker worker = new ServerPrintWorker(true, 0);
