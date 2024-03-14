@@ -11,7 +11,7 @@ import de.schoenbeck.serverprint.work.ServerPrintWorker;
 
 public class ServerPrintProcess extends SvrProcess {
 
-	int ad_client_id, ad_org_id, c_bpartner_id, ad_user_id, c_doctype_id, ad_tab_id, ad_table_id, ad_user_id_bpartner, record_id;
+	int ad_client_id, ad_org_id, c_bpartner_id, ad_user_id, c_doctype_id, ad_tab_id, ad_table_id, ad_user_id_bpartner, printoption_id, record_id;
 	
 	public ServerPrintProcess() {
 		
@@ -48,6 +48,9 @@ public class ServerPrintProcess extends SvrProcess {
 			case "AD_User_ID_bpartner":
 				ad_user_id_bpartner = p.getParameterAsInt();
 				break;
+			case "sbsp_printoption_ID":
+				printoption_id = p.getParameterAsInt();
+				break;
 			default:
 				log.severe("Unknown Parameter: " + p.getParameterName());
 				break;
@@ -69,6 +72,7 @@ public class ServerPrintProcess extends SvrProcess {
 					.setAd_user_id_bpartner(ad_user_id_bpartner)
 					.setC_bpartner_id(c_bpartner_id)
 					.setC_doctype_id(c_doctype_id)
+					.setSbsp_printoption_id(printoption_id)
 					.setRecord_id(record_id)
 					.setProcessParameters(getParameter())
 					.build();
