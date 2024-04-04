@@ -31,7 +31,7 @@ public class X_sbsp_printer extends PO implements I_sbsp_printer, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231207L;
+	private static final long serialVersionUID = 20240325L;
 
     /** Standard Constructor */
     public X_sbsp_printer (Properties ctx, int sbsp_printer_ID, String trxName)
@@ -43,7 +43,6 @@ public class X_sbsp_printer extends PO implements I_sbsp_printer, I_Persistent
 			setValue (null);
 			setlookup (null);
 // 'n'
-			setprinter_uri (null);
 			setsbsp_printer_ID (0);
         } */
     }
@@ -58,7 +57,6 @@ public class X_sbsp_printer extends PO implements I_sbsp_printer, I_Persistent
 			setValue (null);
 			setlookup (null);
 // 'n'
-			setprinter_uri (null);
 			setsbsp_printer_ID (0);
         } */
     }
@@ -264,9 +262,9 @@ public class X_sbsp_printer extends PO implements I_sbsp_printer, I_Persistent
 	public void setsbsp_printerprovider_ID (int sbsp_printerprovider_ID)
 	{
 		if (sbsp_printerprovider_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_sbsp_printerprovider_ID, null);
+			set_Value (COLUMNNAME_sbsp_printerprovider_ID, null);
 		else
-			set_ValueNoCheck (COLUMNNAME_sbsp_printerprovider_ID, Integer.valueOf(sbsp_printerprovider_ID));
+			set_Value (COLUMNNAME_sbsp_printerprovider_ID, Integer.valueOf(sbsp_printerprovider_ID));
 	}
 
 	/** Get Printer Provider.

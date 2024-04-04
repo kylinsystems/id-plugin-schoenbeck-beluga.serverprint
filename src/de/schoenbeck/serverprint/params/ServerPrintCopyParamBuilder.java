@@ -5,8 +5,12 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
+import org.compiere.model.MBPartner;
+import org.compiere.model.MDocType;
+import org.compiere.model.MUser;
 import org.compiere.process.ProcessInfoParameter;
 
+import de.schoenbeck.serverprint.model.X_sbsp_copy;
 import de.schoenbeck.serverprint.work.Copy;
 
 public class ServerPrintCopyParamBuilder {
@@ -31,6 +35,7 @@ public class ServerPrintCopyParamBuilder {
 	String[] mailAttPrefix = {};
 	
 	boolean toArchive = false;
+	boolean useFromArchive = false;
 	boolean mailtouser = false;
 	boolean mailtoaddress = false;
 	boolean senddirectly = false;
@@ -62,38 +67,39 @@ public class ServerPrintCopyParamBuilder {
 	}
 	
 	public ServerPrintCopyParamBuilder setFromResultSet (ResultSet rs) throws SQLException {
-		this.ad_client_id = rs.getInt("ad_client_id");
-		this.ad_org_id = rs.getInt("ad_org_id");
-		this.ad_user_id = rs.getInt("ad_user_id");
-		this.c_bpartner_id = rs.getInt("c_bpartner_id");
-		this.c_doctype_id = rs.getInt("c_doctype_id");
+		this.ad_client_id = rs.getInt(X_sbsp_copy.COLUMNNAME_AD_Client_ID);
+		this.ad_org_id = rs.getInt(X_sbsp_copy.COLUMNNAME_AD_Org_ID);
+		this.ad_user_id = rs.getInt(MUser.COLUMNNAME_AD_User_ID);
+		this.c_bpartner_id = rs.getInt(MBPartner.COLUMNNAME_C_BPartner_ID);
+		this.c_doctype_id = rs.getInt(MDocType.COLUMNNAME_C_DocType_ID);
 		
-		this.sbsp_printconfig_id = rs.getInt("sbsp_printconfig_id");
-		this.ad_process_id = rs.getInt("ad_process_id");
-		this.reportVariant = nvl(rs.getString("ReportVariant"));
-		String extension = nvl(rs.getString("ExportFileExtension"));
+		this.sbsp_printconfig_id = rs.getInt(X_sbsp_copy.COLUMNNAME_sbsp_printconfig_ID);
+		this.ad_process_id = rs.getInt(X_sbsp_copy.COLUMNNAME_AD_Process_ID);
+		this.reportVariant = nvl(rs.getString(X_sbsp_copy.COLUMNNAME_ReportVariant));
+		String extension = nvl(rs.getString(X_sbsp_copy.COLUMNNAME_ExportFileExtension));
 		if (extension != null && extension.equals(""))
 			extension = "pdf";
 		this.exportFileExtension = extension;
-		this.exportFilenamePattern = nvl(rs.getString("ExportFilenamePattern"));
+		this.exportFilenamePattern = nvl(rs.getString(X_sbsp_copy.COLUMNNAME_ExportFilenamePattern));
 		
-		this.depositPath = nvl(rs.getString("DepositPath"));				
-		this.toArchive = rs.getString("toarchive").equals("Y");
+		this.depositPath = nvl(rs.getString(X_sbsp_copy.COLUMNNAME_DepositPath));
+		this.toArchive = rs.getString(X_sbsp_copy.COLUMNNAME_toArchive).equals("Y");
+		this.useFromArchive = rs.getString(X_sbsp_copy.COLUMNNAME_use_existing).equals("Y");
 		
-		this.from_ad_user_id = rs.getInt("From_AD_User_ID");
-		this.r_mailtext_id = rs.getInt("r_mailtext_id");
-		this.copies = (rs.getObject("copies") == null) ? (1) : rs.getInt("copies");
+		this.from_ad_user_id = rs.getInt(X_sbsp_copy.COLUMNNAME_From_AD_User_ID);
+		this.r_mailtext_id = rs.getInt(X_sbsp_copy.COLUMNNAME_R_MailText_ID);
+		this.copies = (rs.getObject(X_sbsp_copy.COLUMNNAME_copies) == null) ? (1) : rs.getInt(X_sbsp_copy.COLUMNNAME_copies);
 		
-		this.eMailTo = nvl(rs.getString("EMail_to"));
-		this.eMailCc = Copy.makeCcList(rs.getString("EMail_CC"));
-		this.eMailBcc = Copy.makeCcList(rs.getString("RecipientBcc"));
-		this.mailAttPrefix = ( (rs.getString("mailattachment_prefix") != null) ? (rs.getString("mailattachment_prefix").split(",")) : new String[0] );
-		this.mailtoaddress = rs.getString("mailtoaddress").equals("Y");
-		this.mailtouser = rs.getString("mailtouser").equals("Y");
-		this.senddirectly = rs.getString("senddirectly").equals("Y");
-		this.actualuserasfrom = rs.getString("actualuserasfrom").equals("Y");
+		this.eMailTo = nvl(rs.getString(X_sbsp_copy.COLUMNNAME_EMail_To));
+		this.eMailCc = Copy.makeCcList(rs.getString(X_sbsp_copy.COLUMNNAME_EMail_CC));
+		this.eMailBcc = Copy.makeCcList(rs.getString(X_sbsp_copy.COLUMNNAME_RecipientBcc));
+		this.mailAttPrefix = ( (rs.getString(X_sbsp_copy.COLUMNNAME_mailattachment_prefix) != null) ? (rs.getString(X_sbsp_copy.COLUMNNAME_mailattachment_prefix).split(",")) : new String[0] );
+		this.mailtoaddress = rs.getString(X_sbsp_copy.COLUMNNAME_mailToAddress).equals("Y");
+		this.mailtouser = rs.getString(X_sbsp_copy.COLUMNNAME_mailToUser).equals("Y");
+		this.senddirectly = rs.getString(X_sbsp_copy.COLUMNNAME_senddirectly).equals("Y");
+		this.actualuserasfrom = rs.getString(X_sbsp_copy.COLUMNNAME_actualUserAsFrom).equals("Y");
 		
-		this.sbsp_printoption_id = rs.getInt("sbsp_printoption_id");
+		this.sbsp_printoption_id = rs.getInt(X_sbsp_copy.COLUMNNAME_sbsp_printoption_ID);
 		
 		return this;
 	}
