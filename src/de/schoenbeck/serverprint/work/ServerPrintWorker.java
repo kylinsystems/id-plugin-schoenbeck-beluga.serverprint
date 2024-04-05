@@ -16,9 +16,12 @@ import java.util.logging.Level;
 
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.adwindow.ADWindowContent;
+import org.adempiere.webui.editor.WButtonEditor;
 import org.adempiere.webui.editor.WEditor;
-import org.adempiere.webui.editor.WTableDirEditor;
+import org.adempiere.webui.editor.WRadioGroupEditor;
 import org.adempiere.webui.window.Dialog;
+import org.compiere.model.GridField;
+import org.compiere.model.GridFieldVO;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.util.CLogger;
@@ -185,7 +188,6 @@ public class ServerPrintWorker {
 		for (int i = 1; i < optArr.length; i++)
 			validation.append(",").append(optArr[i]);
 		validation.append(") AND sbsp_printoption.islimitedtoprocess = 'N'");
-		
 		MLookup lookup = MLookupFactory.get(
 				Env.getCtx(), 
 				windowno,
@@ -196,10 +198,14 @@ public class ServerPrintWorker {
 				19, /*table direct*/
 				false,
 				validation.toString());
-		WEditor editor = new WTableDirEditor(lookup, "", "", true, false, true);
+		
+		
+		WEditor editor = new WRadioGroupEditor(lookup, "", "", true, false, true);
+
+		
 		String msg = Msg.getMsg(Env.getCtx(), "sbsp_printoptiondialog");
 		
-		
+	
 		Dialog.askForInput(windowno, editor, msg, (obj) -> {
 			ServerPrintWorkerParam param = 
 					new ServerPrintWorkerParamBuilder(params[0])
