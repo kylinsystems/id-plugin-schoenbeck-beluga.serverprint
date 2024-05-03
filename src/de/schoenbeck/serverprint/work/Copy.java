@@ -187,7 +187,7 @@ public class Copy {
 						.first();
 				
 				if (doc != null) {
-					String path = System.getProperty("java.io.tmpdir") + File.pathSeparator + doc.getName();
+					String path = System.getProperty("java.io.tmpdir") + File.separator + doc.getName();
 					File rtn = new File(path);
 					rtn.delete();
 					try (FileOutputStream outputStream = new FileOutputStream(rtn)) {
