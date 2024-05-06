@@ -31,7 +31,7 @@ public class X_sbsp_copy extends PO implements I_sbsp_copy, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231207L;
+	private static final long serialVersionUID = 20240325L;
 
     /** Standard Constructor */
     public X_sbsp_copy (Properties ctx, int sbsp_copy_ID, String trxName)
@@ -634,6 +634,28 @@ public class X_sbsp_copy extends PO implements I_sbsp_copy, I_Persistent
 	public boolean istoArchive()
 	{
 		Object oo = get_Value(COLUMNNAME_toArchive);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Use existing Doc.
+		@param use_existing Use existing Doc
+	*/
+	public void setuse_existing (boolean use_existing)
+	{
+		set_Value (COLUMNNAME_use_existing, Boolean.valueOf(use_existing));
+	}
+
+	/** Get Use existing Doc.
+		@return Use existing Doc	  */
+	public boolean isuse_existing()
+	{
+		Object oo = get_Value(COLUMNNAME_use_existing);
 		if (oo != null) 
 		{
 			 if (oo instanceof Boolean) 

@@ -28,6 +28,7 @@ public class ServerPrintCopyParam {
 	public final String[] mailAttPrefix;
 	
 	public final boolean toArchive;
+	public final boolean useFromArchive;
 	public final boolean mailtouser;
 	public final boolean mailtoaddress;
 	public final boolean senddirectly;
@@ -65,6 +66,7 @@ public class ServerPrintCopyParam {
 		this.eMailBcc = b.eMailBcc;
 		this.mailAttPrefix = b.mailAttPrefix;
 		this.toArchive = b.toArchive;
+		this.useFromArchive = b.useFromArchive;
 		this.mailtouser = b.mailtouser;
 		this.mailtoaddress = b.mailtoaddress;
 		this.senddirectly = b.senddirectly;

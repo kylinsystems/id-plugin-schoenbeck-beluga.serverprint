@@ -31,7 +31,7 @@ public class X_sbsp_subprintprofile extends PO implements I_sbsp_subprintprofile
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231207L;
+	private static final long serialVersionUID = 20240325L;
 
     /** Standard Constructor */
     public X_sbsp_subprintprofile (Properties ctx, int sbsp_subprintprofile_ID, String trxName)

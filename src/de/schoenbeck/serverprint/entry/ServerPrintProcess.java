@@ -52,7 +52,7 @@ public class ServerPrintProcess extends SvrProcess {
 				printoption_id = p.getParameterAsInt();
 				break;
 			default:
-				log.severe("Unknown Parameter: " + p.getParameterName());
+				log.info("Unknown Parameter: " + p.getParameterName());
 				break;
 			}
 		}

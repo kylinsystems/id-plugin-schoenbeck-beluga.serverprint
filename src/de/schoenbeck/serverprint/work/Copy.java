@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -35,6 +36,7 @@ import org.compiere.model.MUser;
 import org.compiere.model.MUserMail;
 import org.compiere.model.PO;
 import org.compiere.model.PrintInfo;
+import org.compiere.model.Query;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.ServerProcessCtl;
@@ -172,6 +174,33 @@ public class Copy {
 	
 	public static File prepareReport (ServerPrintCopyParam p) {
 
+		try {
+			if (p.toArchive && p.useFromArchive) {
+				final String sql = "ad_client_id = ? "
+							+ "AND ad_table_id = ? "
+							+ "AND record_id = ? "
+							+ "AND name LIKE ? ";
+				
+				MArchive doc = new Query(Env.getCtx(), MArchive.Table_Name, sql, null)
+						.setParameters(p.ad_client_id, p.ad_table_id, p.record_id, "%." + p.exportFileExtension)
+						.setOrderBy(MArchive.COLUMNNAME_Created)
+						.first();
+				
+				if (doc != null) {
+					String path = System.getProperty("java.io.tmpdir") + File.separator + doc.getName();
+					File rtn = new File(path);
+					rtn.delete();
+					try (FileOutputStream outputStream = new FileOutputStream(rtn)) {
+					    outputStream.write(doc.getBinaryData());
+					}
+					return rtn;
+				}
+			}
+		} catch (IOException e) {
+			CLogger.get().log(Level.SEVERE, "Exception loading file from archive", e);
+			return null;
+		}
+		
 		ProcessInfo reportPI = new ProcessInfo("Document", p.ad_process_id, p.ad_table_id, p.record_id);
 		var params = new ProcessInfoParameter[p.processParams.length + 2];
 		params[0] =	new ProcessInfoParameter("C_Doctype_ID", p.c_doctype_id, null,"","");

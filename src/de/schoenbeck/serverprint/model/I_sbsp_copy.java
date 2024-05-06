@@ -403,4 +403,13 @@ public interface I_sbsp_copy
 
 	/** Get To Archive	  */
 	public boolean istoArchive();
+
+    /** Column name use_existing */
+    public static final String COLUMNNAME_use_existing = "use_existing";
+
+	/** Set Use existing Doc	  */
+	public void setuse_existing (boolean use_existing);
+
+	/** Get Use existing Doc	  */
+	public boolean isuse_existing();
 }
