@@ -272,6 +272,20 @@ public class Copy {
 	
 	private static void archive (ServerPrintCopyParam p, File printedDoc) throws IOException {
 		
+		// don't archive a doc we have taken from the archive!
+		final String sql = "ad_client_id = ? "
+				+ "AND ad_table_id = ? "
+				+ "AND record_id = ? "
+				+ "AND name LIKE ? ";
+		if (p.toArchive
+				&& p.useFromArchive
+				&& new Query(Env.getCtx(), MArchive.Table_Name, sql, null)
+				.setParameters(p.ad_client_id, p.ad_table_id, p.record_id, "%." + p.exportFileExtension)
+				.setOrderBy(MArchive.COLUMNNAME_Created)
+				.match()
+				)
+			return;
+		
 		ByteArrayOutputStream bas = new ByteArrayOutputStream();
 		FileInputStream fis = null;
 		try {
