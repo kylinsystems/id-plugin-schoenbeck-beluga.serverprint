@@ -493,7 +493,16 @@ public class Copy {
 				for (MAttachmentEntry entry : attachments)
 					for (String prefix : p.mailAttPrefix)
 						if (entry.getName().startsWith(prefix))
-							rtn.add(entry.getFile());
+							rtn.add(entry.getFile());			
+			
+		} catch (NullPointerException | IndexOutOfBoundsException e) {}
+		
+		try {
+			MAttachmentEntry[] attachmentsFromCopy = MTable.get(Env.getCtx(),de.schoenbeck.serverprint.model.X_sbsp_copy.Table_ID,p.trxname).getPO(p.sbsp_copy_id,p.trxname).getAttachment().getEntries();
+			if (!attachmentsFromCopy.equals(null) && attachmentsFromCopy.length > 0)
+				for (MAttachmentEntry entry : attachmentsFromCopy)
+					rtn.add(entry.getFile());
+		
 		} catch (NullPointerException | IndexOutOfBoundsException e) {}
 		
 		return rtn;

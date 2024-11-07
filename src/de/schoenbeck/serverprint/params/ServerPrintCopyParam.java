@@ -40,6 +40,8 @@ public class ServerPrintCopyParam {
 	
 	public final int sbsp_printoption_id;
 	
+	public final int sbsp_copy_id;
+	
 	public final int windowno = 0;
 	public final boolean isCalledFromProcess;
 	public final ProcessInfoParameter[] processParams;
@@ -77,6 +79,7 @@ public class ServerPrintCopyParam {
 		this.isCalledFromProcess = b.isCalledFromProcess;
 		this.trxname = b.trxname;
 		this.sbsp_printoption_id = b.sbsp_printoption_id;
+		this.sbsp_copy_id = b.sbsp_copy_id;
 		this.processParams = b.processParams;
 	}
 

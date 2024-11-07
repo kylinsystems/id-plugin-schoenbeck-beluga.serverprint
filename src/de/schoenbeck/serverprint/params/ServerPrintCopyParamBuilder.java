@@ -47,6 +47,8 @@ public class ServerPrintCopyParamBuilder {
 	
 	int sbsp_printoption_id = 0;
 	
+	int sbsp_copy_id = 0;
+	
 	int windowno = 0;
 	boolean isCalledFromProcess = true;
 	ProcessInfoParameter[] processParams = {};
@@ -100,6 +102,8 @@ public class ServerPrintCopyParamBuilder {
 		this.actualuserasfrom = rs.getString(X_sbsp_copy.COLUMNNAME_actualUserAsFrom).equals("Y");
 		
 		this.sbsp_printoption_id = rs.getInt(X_sbsp_copy.COLUMNNAME_sbsp_printoption_ID);
+		
+		this.sbsp_copy_id = rs.getInt(X_sbsp_copy.COLUMNNAME_sbsp_copy_ID);
 		
 		return this;
 	}
@@ -236,6 +240,11 @@ public class ServerPrintCopyParamBuilder {
 
 	public ServerPrintCopyParamBuilder setSbsp_printoption_id(int sbsp_printoption_id) {
 		this.sbsp_printoption_id = sbsp_printoption_id;
+		return this;
+	}
+	
+	public ServerPrintCopyParamBuilder setSbsp_copy_id(int sbsp_copy_id) {
+		this.sbsp_copy_id = sbsp_copy_id;
 		return this;
 	}
 
