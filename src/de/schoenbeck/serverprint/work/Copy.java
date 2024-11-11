@@ -55,6 +55,7 @@ import de.schoenbeck.serverprint.exceptions.TemplateNotFoundException;
 import de.schoenbeck.serverprint.helper.SBSP_EMailDialog;
 import de.schoenbeck.serverprint.model.MPrinter;
 import de.schoenbeck.serverprint.model.MPrinterProvider;
+import de.schoenbeck.serverprint.model.X_sbsp_copy;
 import de.schoenbeck.serverprint.params.ServerPrintCopyParam;
 import de.schoenbeck.serverprint.printProvider.ServerPrintProcessManager;
 
@@ -498,7 +499,7 @@ public class Copy {
 		} catch (NullPointerException | IndexOutOfBoundsException e) {}
 		
 		try {
-			MAttachmentEntry[] attachmentsFromCopy = MTable.get(Env.getCtx(),de.schoenbeck.serverprint.model.X_sbsp_copy.Table_ID,p.trxname).getPO(p.sbsp_copy_id,p.trxname).getAttachment().getEntries();
+			MAttachmentEntry[] attachmentsFromCopy = new X_sbsp_copy(Env.getCtx(), p.sbsp_copy_id, p.trxname).getAttachment().getEntries();
 			if (!attachmentsFromCopy.equals(null) && attachmentsFromCopy.length > 0)
 				for (MAttachmentEntry entry : attachmentsFromCopy)
 					rtn.add(entry.getFile());
